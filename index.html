@@ -638,8 +638,8 @@ footer { background: var(--charcoal); padding: 80px 48px 40px; }
 .footer-legal { font-size: 12px; color: rgba(255,255,255,0.3); line-height: 1.6; max-width: 600px; }
 .footer-afs { font-size: 12px; color: rgba(255,255,255,0.3); flex-shrink: 0; }
 
-/* SCROLL REVEAL — now handled by GSAP */
-.reveal { opacity: 0; }
+/* SCROLL REVEAL — visibility never blocked by CSS; GSAP handles entrances */
+.reveal { }
 
 /* CANVAS AURORA */
 #hero-canvas {
@@ -655,41 +655,6 @@ footer { background: var(--charcoal); padding: 80px 48px 40px; }
 /* GRAIN — disabled */
 .grain { display: none; }
 
-/* CUSTOM CURSOR */
-body { cursor: none; }
-.cursor-dot {
-  width: 6px; height: 6px;
-  background: var(--coral);
-  border-radius: 50%;
-  position: fixed;
-  top: 0; left: 0;
-  pointer-events: none;
-  z-index: 10000;
-  transform: translate(-50%, -50%);
-}
-.cursor-ring {
-  width: 38px; height: 38px;
-  border: 1.5px solid var(--coral);
-  border-radius: 50%;
-  position: fixed;
-  top: 0; left: 0;
-  pointer-events: none;
-  z-index: 9999;
-  transform: translate(-50%, -50%);
-  transition: width 0.3s cubic-bezier(.23,1,.32,1),
-              height 0.3s cubic-bezier(.23,1,.32,1),
-              background 0.3s, border-color 0.3s;
-}
-.cursor-ring.is-hover {
-  width: 64px; height: 64px;
-  background: rgba(242,104,97,0.08);
-  border-color: rgba(242,104,97,0.5);
-}
-.cursor-ring.is-hidden { opacity: 0; }
-@media (hover: none) {
-  body { cursor: auto; }
-  .cursor-dot, .cursor-ring { display: none; }
-}
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
@@ -715,8 +680,6 @@ body { cursor: none; }
 </head>
 <body>
 <div class="grain"></div>
-<div class="cursor-dot"></div>
-<div class="cursor-ring"></div>
 
 <!-- NAV -->
 <nav>
@@ -1100,39 +1063,7 @@ const grainEl = document.querySelector('.grain');
 grainEl.style.backgroundImage = `url(${grainCanvas.toDataURL()})`;
 
 /* ─────────────────────────────────────────
-   5. CUSTOM CURSOR
-───────────────────────────────────────── */
-const cursorDot  = document.querySelector('.cursor-dot');
-const cursorRing = document.querySelector('.cursor-ring');
-let mx = -200, my = -200, rx = -200, ry = -200;
-
-document.addEventListener('mousemove', e => {
-  mx = e.clientX; my = e.clientY;
-  gsap.to(cursorDot, { x: mx, y: my, duration: 0.06, ease: 'none' });
-});
-
-gsap.ticker.add(() => {
-  rx += (mx - rx) * 0.10;
-  ry += (my - ry) * 0.10;
-  gsap.set(cursorRing, { x: rx, y: ry });
-});
-
-document.addEventListener('mouseleave', () => cursorRing.classList.add('is-hidden'));
-document.addEventListener('mouseenter', () => cursorRing.classList.remove('is-hidden'));
-
-document.querySelectorAll('a, button, .service-card, .vid-featured, .vid-side, .vid-grid-card, .why-card, .test-card').forEach(el => {
-  el.addEventListener('mouseenter', () => {
-    cursorRing.classList.add('is-hover');
-    gsap.to(cursorDot, { scale: 0, duration: 0.2 });
-  });
-  el.addEventListener('mouseleave', () => {
-    cursorRing.classList.remove('is-hover');
-    gsap.to(cursorDot, { scale: 1, duration: 0.2 });
-  });
-});
-
-/* ─────────────────────────────────────────
-   6. MAGNETIC BUTTONS
+   5. MAGNETIC BUTTONS
 ───────────────────────────────────────── */
 document.querySelectorAll('.btn-primary, .btn-white, .nav-cta').forEach(btn => {
   btn.addEventListener('mousemove', e => {
