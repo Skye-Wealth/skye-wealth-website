@@ -179,6 +179,14 @@ a { text-decoration: none; color: inherit; }
   color: rgba(255,255,255,0.55);
 }
 
+/* "Simplified." — starts invisible (matches hero coral bg), blooms to yellow */
+.hero-word-reveal {
+  color: var(--coral);
+  filter: blur(20px);
+  display: inline-block; /* required for filter on inline */
+  will-change: filter, color;
+}
+
 .hero-bottom {
   display: flex;
   align-items: flex-end;
@@ -1023,7 +1031,7 @@ footer {
   <h1 class="hero-heading">
     <span class="reveal-line"><span class="inner">Life</span></span>
     <span class="reveal-line"><span class="inner">Insurance,</span></span>
-    <span class="reveal-line"><span class="inner" style="color:var(--coral)">Simplified.</span></span>
+    <span class="reveal-line"><span class="inner hero-word-reveal">Simplified.</span></span>
   </h1>
 
   <div class="hero-bottom">
@@ -1532,7 +1540,15 @@ heroTL
     ease: 'power4.out',
     stagger: 0.14,
   }, '-=0.4')
-  .from('.hero-sub', { y: 20, opacity: 0, duration: 0.8, ease: 'power3.out' }, '-=0.5')
+  /* "Simplified." blooms from coral-hidden → yellow with blur dissolve + glow */
+  .to('.hero-word-reveal', {
+    color: '#fee290',
+    filter: 'blur(0px)',
+    textShadow: '0 0 48px rgba(254,226,144,0.55), 0 0 120px rgba(254,226,144,0.25)',
+    duration: 2.6,
+    ease: 'power2.inOut',
+  }, '-=0.15')
+  .from('.hero-sub', { y: 20, opacity: 0, duration: 0.8, ease: 'power3.out' }, '-=2.0')
   .from('.hero-actions .btn', {
     y: 16, opacity: 0, scale: 0.95,
     duration: 0.6, ease: 'back.out(1.8)', stagger: 0.1
