@@ -4,373 +4,621 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Skye Wealth — Life Insurance, Simplified</title>
-<link href="https://fonts.googleapis.com/css2?family=Corben:wght@400;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,900;1,700;1,900&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
+/* ── RESET & BASE ───────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --coral: #f26861;
-  --mauve: #c39bbd;
-  --pink: #f7b2d1;
-  --teal: #79c8bf;
-  --yellow: #fee290;
-  --charcoal: #434246;
-  --cream: #F7F3EC;
-  --white: #ffffff;
+  --black:   #0c0e14;
+  --white:   #ffffff;
+  --cream:   #f8f5ef;
+  --coral:   #f26861;
+  --teal:    #79c8bf;
+  --yellow:  #fee290;
+  --mauve:   #c39bbd;
+  --pink:    #f7b2d1;
+  --mid:     #9b9a9f;
+  --charcoal:#434246;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-smooth:   cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+html { scroll-behavior: auto; }
 
 body {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  background: var(--cream);
+  background: var(--black);
+  color: var(--white);
   overflow-x: hidden;
-  color: var(--charcoal);
+  -webkit-font-smoothing: antialiased;
 }
 
-/* NAV */
-nav {
+img { display: block; max-width: 100%; }
+a { text-decoration: none; color: inherit; }
+
+/* ── TYPOGRAPHY ─────────────────────────────────── */
+.display {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-style: italic;
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+/* ── LINE REVEAL (clips text sliding up from below) */
+.reveal-line { overflow: hidden; display: block; }
+.reveal-line .inner { display: block; will-change: transform; }
+
+/* ── NAV ────────────────────────────────────────── */
+.nav {
   position: fixed;
   top: 0; left: 0; right: 0;
-  z-index: 100;
-  padding: 18px 48px;
+  z-index: 200;
+  padding: 20px 48px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: var(--cream);
-  border-bottom: 1.5px solid rgba(67,66,70,0.10);
+  transition: background 0.5s var(--ease-smooth),
+              box-shadow 0.5s var(--ease-smooth);
 }
-.nav-logo {
-  text-decoration: none;
-  display: flex;
-  align-items: center;
+.nav.is-light {
+  background: var(--white);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.07);
 }
 .nav-logo img {
-  height: 36px;
+  height: 34px;
   width: auto;
-  display: block;
+  filter: brightness(0) invert(1);
+  transition: filter 0.5s var(--ease-smooth);
 }
+.nav.is-light .nav-logo img { filter: none; }
+
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   list-style: none;
 }
-.nav-links li a {
-  text-decoration: none;
-  color: var(--charcoal);
+.nav-links a {
   font-size: 14px;
   font-weight: 500;
   padding: 8px 16px;
   border-radius: 100px;
-  transition: background 0.2s;
+  color: rgba(255,255,255,0.75);
+  transition: color 0.3s, background 0.3s;
 }
-.nav-links li a:hover { background: rgba(67,66,70,0.08); }
+.nav-links a:hover { color: white; background: rgba(255,255,255,0.1); }
+.nav.is-light .nav-links a { color: var(--charcoal); }
+.nav.is-light .nav-links a:hover { background: rgba(0,0,0,0.05); color: var(--black); }
+
 .nav-cta {
-  background: var(--coral) !important;
-  color: white !important;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 24px;
   border-radius: 100px;
-  padding: 10px 24px !important;
-  font-weight: 600 !important;
-  transition: transform 0.2s, box-shadow 0.2s !important;
+  border: 1.5px solid rgba(255,255,255,0.4);
+  color: white;
+  transition: background 0.3s, border-color 0.3s, color 0.3s;
 }
-.nav-cta:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(242,104,97,0.35) !important;
+.nav-cta:hover { background: white; color: var(--black); border-color: white; }
+.nav.is-light .nav-cta {
+  background: var(--coral);
+  border-color: var(--coral);
+  color: white;
+}
+.nav.is-light .nav-cta:hover {
+  background: #e05550;
+  border-color: #e05550;
 }
 
-/* HERO */
+/* ── HERO ───────────────────────────────────────── */
 .hero {
-  min-height: 100vh;
-  background: var(--cream);
+  position: relative;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: 120px 48px 80px;
-  position: relative;
+  justify-content: flex-end;
+  padding: 0 48px 72px;
   overflow: hidden;
+  background: var(--black);
 }
-.hero-eyebrow {
+#hero-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+}
+.hero-badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   letter-spacing: 2.5px;
   text-transform: uppercase;
-  color: var(--charcoal);
-  background: rgba(255,255,255,0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.9);
-  box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+  color: rgba(255,255,255,0.55);
+  border: 1px solid rgba(255,255,255,0.18);
   border-radius: 100px;
-  padding: 8px 18px;
-  margin-bottom: 36px;
+  padding: 7px 16px;
+  margin-bottom: 32px;
   width: fit-content;
-  opacity: 0;
+  position: relative;
+  z-index: 1;
 }
-.hero-eyebrow::before {
+.hero-badge::before {
   content: '';
-  width: 7px; height: 7px;
+  width: 6px; height: 6px;
   border-radius: 50%;
   background: var(--coral);
-  display: inline-block;
-  flex-shrink: 0;
+  animation: pulse 2s ease-in-out infinite;
 }
-.hero-title {
-  font-family: 'Corben', cursive;
-  font-weight: 700;
-  font-size: clamp(62px, 9.5vw, 132px);
-  line-height: 0.95;
-  letter-spacing: -2px;
-  color: var(--charcoal);
-  margin-bottom: 44px;
-  max-width: 1100px;
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.7); }
 }
-.title-line { display: block; overflow: hidden; line-height: 1.02; padding-bottom: 0.05em; }
-.title-line--serif {
-  font-family: 'Corben', cursive;
-  font-weight: 700;
-  font-style: normal;
-  text-transform: none;
-  letter-spacing: -2px;
+
+.hero-heading {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-style: italic;
+  font-size: clamp(88px, 15vw, 210px);
+  line-height: 0.88;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--white);
+  position: relative;
+  z-index: 1;
+  margin-bottom: 48px;
+}
+.hero-heading em {
+  font-style: italic;
   color: var(--coral);
 }
-.char { display: inline-block; will-change: transform; }
+
 .hero-bottom {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 40px;
-  opacity: 0;
+  position: relative;
+  z-index: 1;
 }
 .hero-sub {
-  font-size: 17px;
-  line-height: 1.7;
-  color: var(--charcoal);
-  opacity: 0.6;
-  max-width: 400px;
+  font-size: 16px;
+  line-height: 1.65;
+  color: rgba(255,255,255,0.5);
+  max-width: 380px;
   font-weight: 400;
-  letter-spacing: 0.1px;
 }
 .hero-actions {
   display: flex;
-  gap: 16px;
+  gap: 12px;
   align-items: center;
   flex-shrink: 0;
 }
-.shape {
+
+.hero-scroll-hint {
   position: absolute;
-  border-radius: 50%;
-  opacity: 0.18;
-  animation: float 6s ease-in-out infinite;
+  bottom: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  opacity: 0.35;
+  z-index: 1;
 }
-.shape-1 { width: 320px; height: 320px; background: var(--mauve); right: 8%; top: 15%; animation-delay: 0s; }
-.shape-2 { width: 180px; height: 180px; background: var(--teal); right: 22%; bottom: 20%; animation-delay: 1.5s; }
-.shape-3 { width: 100px; height: 100px; background: var(--yellow); left: 5%; bottom: 30%; animation-delay: 3s; }
+.hero-scroll-hint span {
+  font-size: 10px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.scroll-line {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, white, transparent);
+  animation: scrollLine 1.8s ease-in-out infinite;
+}
+@keyframes scrollLine {
+  0%   { transform: scaleY(0); transform-origin: top; }
+  50%  { transform: scaleY(1); transform-origin: top; }
+  51%  { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
 
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-18px); }
+/* ── BUTTONS ────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 14px 32px;
+  border-radius: 100px;
+  transition: transform 0.3s var(--ease-out-expo),
+              box-shadow 0.3s var(--ease-out-expo);
+  cursor: pointer;
+  white-space: nowrap;
 }
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
+.btn:hover { transform: translateY(-2px); }
 
-/* BUTTONS */
-.btn-primary {
+.btn--coral {
   background: var(--coral);
   color: white;
-  padding: 16px 36px;
-  border-radius: 100px;
-  font-size: 16px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: transform 0.2s, box-shadow 0.2s;
-  display: inline-block;
 }
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(242,104,97,0.4);
-}
-.btn-ghost {
-  color: var(--charcoal);
-  padding: 16px 36px;
-  border-radius: 100px;
-  font-size: 16px;
-  font-weight: 500;
-  text-decoration: none;
-  border: 2px solid rgba(67,66,70,0.25);
-  transition: border-color 0.2s, background 0.2s;
-  display: inline-block;
-}
-.btn-ghost:hover {
-  border-color: var(--charcoal);
-  background: rgba(67,66,70,0.05);
-}
-.btn-white {
-  background: white;
-  color: var(--mauve);
-  padding: 18px 44px;
-  border-radius: 100px;
-  font-size: 16px;
-  font-weight: 700;
-  text-decoration: none;
-  transition: transform 0.2s, box-shadow 0.2s;
-  display: inline-block;
-}
-.btn-white:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-}
-.btn-outline-white {
+.btn--coral:hover { box-shadow: 0 10px 32px rgba(242,104,97,0.4); }
+
+.btn--outline-white {
   background: transparent;
   color: white;
-  padding: 18px 44px;
-  border-radius: 100px;
-  font-size: 16px;
-  font-weight: 600;
-  text-decoration: none;
-  border: 2px solid rgba(255,255,255,0.45);
-  transition: border-color 0.2s, background 0.2s;
-  display: inline-block;
+  border: 1.5px solid rgba(255,255,255,0.3);
 }
-.btn-outline-white:hover {
-  border-color: white;
-  background: rgba(255,255,255,0.12);
+.btn--outline-white:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.7);
 }
 
-/* MARQUEE */
-.marquee-wrap {
-  background: var(--cream);
-  padding: 28px 48px;
+.btn--outline-dark {
+  background: transparent;
+  color: var(--black);
+  border: 1.5px solid rgba(0,0,0,0.2);
+}
+.btn--outline-dark:hover {
+  background: rgba(0,0,0,0.05);
+  border-color: var(--black);
+}
+
+.btn--dark {
+  background: var(--black);
+  color: white;
+}
+.btn--dark:hover { box-shadow: 0 10px 32px rgba(0,0,0,0.3); }
+
+/* ── TICKER ─────────────────────────────────────── */
+.ticker-wrap {
+  padding: 20px 48px;
+  background: var(--black);
   position: relative;
   z-index: 10;
 }
-.marquee-strip {
-  background: rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  border: 1px solid rgba(255, 255, 255, 0.85);
-  box-shadow: 0 8px 40px rgba(0,0,0,0.07), 0 1px 0 rgba(255,255,255,0.95) inset;
+.ticker {
+  background: rgba(255,255,255,0.07);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.12);
   border-radius: 100px;
-  padding: 14px 0;
+  padding: 12px 0;
   overflow: hidden;
   white-space: nowrap;
 }
-.marquee-inner {
+.ticker-inner {
   display: inline-block;
-  animation: marquee 22s linear infinite;
 }
-.marquee-item {
-  display: inline-block;
-  font-family: 'Corben', cursive;
-  font-weight: 700;
-  font-size: 12px;
-  letter-spacing: 2px;
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2.5px;
   text-transform: uppercase;
-  color: var(--charcoal);
-  margin: 0 40px;
+  color: rgba(255,255,255,0.55);
+  margin: 0 36px;
 }
-.marquee-dot {
-  display: inline-block;
-  width: 8px; height: 8px;
+.ticker-dot {
+  width: 6px; height: 6px;
   border-radius: 50%;
-  margin-right: 16px;
-  vertical-align: middle;
+  flex-shrink: 0;
 }
 
-/* SERVICES */
-.services-section { background: var(--coral); padding: 100px 48px; }
-.section-label {
-  font-size: 12px;
+/* ── STATEMENT SECTION ──────────────────────────── */
+.statement {
+  background: var(--white);
+  color: var(--black);
+  padding: 120px 48px;
+}
+.statement-label {
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 3px;
   text-transform: uppercase;
-  margin-bottom: 60px;
+  color: var(--coral);
+  margin-bottom: 40px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
-.services-title {
-  font-family: 'Corben', cursive;
-  font-weight: 700;
-  font-size: clamp(48px, 7vw, 90px);
-  line-height: 0.95;
-  letter-spacing: -2px;
-  color: white;
-  margin-bottom: 80px;
-}
-.services-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 3px;
-}
-.service-card {
-  background: rgba(255,255,255,0.12);
-  padding: 48px 40px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background 0.25s, transform 0.25s;
-  text-decoration: none;
+.statement-label::before {
+  content: '';
   display: block;
+  width: 24px; height: 1.5px;
+  background: var(--coral);
 }
-.service-card:hover {
-  background: rgba(255,255,255,0.22);
-  transform: translateY(-3px);
+.statement-heading {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-style: italic;
+  font-size: clamp(72px, 11vw, 160px);
+  line-height: 0.88;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--black);
+  margin-bottom: 64px;
 }
-.service-num {
+.statement-heading em { color: var(--coral); font-style: italic; }
+
+.statement-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+.statement-copy {
+  font-size: 18px;
+  line-height: 1.7;
+  color: #555;
+  font-weight: 400;
+}
+.statement-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+.stat-box {
+  padding: 28px 24px;
+  background: var(--cream);
+  border-radius: 16px;
+}
+.stat-num {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-size: 52px;
+  line-height: 1;
+  color: var(--black);
+  letter-spacing: -1px;
+}
+.stat-num em { color: var(--coral); font-style: normal; }
+.stat-label {
+  font-size: 13px;
+  color: #999;
+  margin-top: 6px;
+  font-weight: 500;
+}
+
+/* ── SERVICES (CARD STACK) ──────────────────────── */
+.services {
+  background: var(--cream);
+  padding: 120px 48px;
+  overflow: hidden;
+}
+.section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 80px;
+  gap: 40px;
+}
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--coral);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-label::before {
+  content: '';
+  display: block;
+  width: 24px; height: 1.5px;
+  background: var(--coral);
+}
+.section-heading {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-style: italic;
+  font-size: clamp(52px, 8vw, 110px);
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--black);
+}
+.section-heading em { color: var(--coral); font-style: italic; }
+.section-sub {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #888;
+  max-width: 320px;
+  text-align: right;
+}
+
+/* Card stack layout */
+.stack-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+.stack-container {
+  position: relative;
+  height: 520px;
+  cursor: grab;
+  user-select: none;
+}
+.stack-container:active { cursor: grabbing; }
+
+.stack-card {
+  position: absolute;
+  width: 340px;
+  height: 480px;
+  border-radius: 24px;
+  padding: 40px 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  will-change: transform;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+  overflow: hidden;
+}
+.stack-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+  pointer-events: none;
+}
+.card--coral  { background: var(--coral); }
+.card--teal   { background: var(--teal); }
+.card--mauve  { background: var(--mauve); }
+.card--yellow { background: var(--yellow); }
+
+.card-num {
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 2px;
-  color: rgba(255,255,255,0.5);
-  margin-bottom: 20px;
+  opacity: 0.6;
+  text-transform: uppercase;
 }
-.service-name {
-  font-family: 'Corben', cursive;
-  font-weight: 700;
-  font-size: 28px;
-  color: white;
-  margin-bottom: 12px;
+.card-icon {
+  font-size: 40px;
+  line-height: 1;
+}
+.card-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-size: 38px;
+  line-height: 0.95;
   letter-spacing: -0.5px;
+  text-transform: uppercase;
 }
-.service-desc {
-  font-size: 15px;
-  color: rgba(255,255,255,0.75);
-  line-height: 1.6;
-}
-.service-arrow {
-  display: inline-block;
-  margin-top: 24px;
-  font-size: 22px;
-  color: white;
-  transition: transform 0.2s;
-}
-.service-card:hover .service-arrow { transform: translateX(6px); }
+.card--yellow .card-title,
+.card--yellow .card-num { color: var(--black); }
+.card--yellow .card-desc { color: rgba(0,0,0,0.6); }
 
-/* SKYE TV */
-.skye-tv { background: var(--charcoal); padding: 100px 48px; }
+.card-desc {
+  font-size: 14px;
+  line-height: 1.6;
+  opacity: 0.8;
+  font-weight: 400;
+}
+.card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  opacity: 0.9;
+  transition: gap 0.2s;
+}
+.card-cta:hover { gap: 10px; }
+
+/* Stack side info */
+.stack-info { padding: 20px 0; }
+.stack-counter {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-size: 72px;
+  line-height: 1;
+  color: var(--black);
+  letter-spacing: -2px;
+  margin-bottom: 8px;
+}
+.stack-counter span { color: var(--coral); }
+.stack-counter-label {
+  font-size: 13px;
+  color: #999;
+  font-weight: 500;
+  margin-bottom: 40px;
+}
+.stack-nav {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 40px;
+}
+.stack-btn {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0,0,0,0.15);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+  color: var(--black);
+}
+.stack-btn:hover {
+  background: var(--black);
+  color: white;
+  border-color: var(--black);
+  transform: scale(1.05);
+}
+.stack-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.stack-title-item {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-size: 22px;
+  letter-spacing: -0.3px;
+  text-transform: uppercase;
+  color: #ccc;
+  font-style: italic;
+  transition: color 0.3s;
+  cursor: pointer;
+}
+.stack-title-item.is-active { color: var(--black); }
+
+/* ── SKYE TV ─────────────────────────────────────── */
+.skye-tv {
+  background: var(--black);
+  padding: 120px 48px;
+}
+.tv-heading {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-style: italic;
+  font-size: clamp(80px, 13vw, 180px);
+  line-height: 0.88;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  margin-bottom: 60px;
+}
+.tv-heading .t-skye { color: var(--yellow); }
+.tv-heading .t-tv   { color: var(--teal); }
+
 .tv-header {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  margin-bottom: 60px;
+  margin-bottom: 48px;
+  gap: 40px;
 }
-.tv-title {
-  font-family: 'Corben', cursive;
-  font-weight: 700;
-  font-size: clamp(56px, 9vw, 120px);
-  line-height: 0.9;
-  letter-spacing: -3px;
-  text-transform: uppercase;
-}
-.tv-title .t-skye { color: var(--yellow); }
-.tv-title .t-tv { color: var(--teal); }
 .tv-sub {
   font-size: 15px;
-  color: rgba(255,255,255,0.5);
-  max-width: 280px;
+  color: rgba(255,255,255,0.4);
+  max-width: 300px;
   line-height: 1.6;
-  margin-bottom: 8px;
+  margin-bottom: 16px;
 }
+
+/* Tabs */
 .tv-tabs {
   display: flex;
   gap: 8px;
@@ -378,55 +626,54 @@ nav {
   flex-wrap: wrap;
 }
 .tv-tab {
-  padding: 10px 22px;
+  padding: 9px 20px;
   border-radius: 100px;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
-  cursor: pointer;
-  border: 1.5px solid rgba(255,255,255,0.2);
-  color: rgba(255,255,255,0.6);
-  background: transparent;
-  transition: all 0.2s;
   letter-spacing: 0.3px;
+  border: 1.5px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.45);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.25s;
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
-.tv-tab:hover, .tv-tab.active {
+.tv-tab:hover { border-color: rgba(255,255,255,0.4); color: rgba(255,255,255,0.8); }
+.tv-tab.active {
   background: var(--yellow);
   border-color: var(--yellow);
-  color: var(--charcoal);
+  color: var(--black);
 }
-.tv-featured {
+
+/* Featured + side layout */
+.tv-featured-grid {
   display: grid;
   grid-template-columns: 1.6fr 1fr;
-  gap: 24px;
-  margin-bottom: 24px;
+  gap: 20px;
+  margin-bottom: 20px;
 }
-.vid-featured {
-  background: rgba(255,255,255,0.06);
-  border-radius: 16px;
+.vid-main {
+  background: rgba(255,255,255,0.05);
+  border-radius: 20px;
   overflow: hidden;
-  cursor: pointer;
-  transition: transform 0.25s;
   text-decoration: none;
   display: block;
+  transition: transform 0.35s var(--ease-out-expo);
 }
-.vid-featured:hover { transform: scale(1.01); }
-.vid-thumb-lg {
-  height: 300px;
+.vid-main:hover { transform: scale(1.01); }
+.vid-thumb {
+  height: 280px;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
 }
 .vid-thumb-bg {
-  position: absolute;
-  inset: 0;
-  opacity: 0.3;
-  background: repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255,255,255,0.08) 20px, rgba(255,255,255,0.08) 21px);
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255,255,255,0.03) 20px, rgba(255,255,255,0.03) 21px);
 }
 .play-btn {
-  width: 64px; height: 64px;
+  width: 60px; height: 60px;
   background: white;
   border-radius: 50%;
   display: flex;
@@ -434,403 +681,518 @@ nav {
   justify-content: center;
   position: relative;
   z-index: 1;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.25s, box-shadow 0.25s;
 }
-.play-btn:hover { transform: scale(1.1); }
+.play-btn:hover { transform: scale(1.12); box-shadow: 0 8px 28px rgba(0,0,0,0.25); }
 .play-tri {
   width: 0; height: 0;
-  border-top: 11px solid transparent;
-  border-bottom: 11px solid transparent;
-  border-left: 18px solid var(--charcoal);
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-left: 16px solid var(--black);
   margin-left: 4px;
 }
 .vid-badge {
   position: absolute;
-  top: 16px; left: 16px;
+  top: 14px; left: 14px;
   background: var(--coral);
   color: white;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  padding: 5px 12px;
+  padding: 4px 10px;
   border-radius: 100px;
 }
 .vid-duration {
   position: absolute;
-  bottom: 16px; right: 16px;
+  bottom: 14px; right: 14px;
   background: rgba(0,0,0,0.6);
   color: white;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
-  padding: 4px 10px;
+  padding: 3px 9px;
   border-radius: 6px;
 }
-.vid-info { padding: 24px 28px 28px; }
+.vid-info { padding: 22px 26px 26px; }
 .vid-series {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--teal);
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
   margin-bottom: 8px;
 }
-.vid-title-lg {
-  font-family: 'Corben', cursive;
+.vid-title {
+  font-family: 'Barlow Condensed', sans-serif;
   font-weight: 700;
   font-size: 22px;
+  line-height: 1.1;
   color: white;
-  line-height: 1.2;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
+  letter-spacing: -0.2px;
 }
-.vid-meta { font-size: 13px; color: rgba(255,255,255,0.4); }
-.tv-side { display: flex; flex-direction: column; gap: 12px; }
-.vid-side {
-  background: rgba(255,255,255,0.05);
-  border-radius: 12px;
+.vid-meta { font-size: 12px; color: rgba(255,255,255,0.35); }
+
+.tv-side-list {
   display: flex;
-  gap: 16px;
-  padding: 16px;
-  cursor: pointer;
-  transition: background 0.2s;
-  text-decoration: none;
+  flex-direction: column;
+  gap: 10px;
 }
-.vid-side:hover { background: rgba(255,255,255,0.1); }
-.vid-thumb-sm {
-  width: 100px; height: 68px;
+.vid-side {
+  background: rgba(255,255,255,0.04);
+  border-radius: 14px;
+  display: flex;
+  gap: 14px;
+  padding: 14px;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.vid-side:hover { background: rgba(255,255,255,0.09); }
+.vid-side-thumb {
+  width: 96px; height: 66px;
   border-radius: 8px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.play-sm {
-  width: 28px; height: 28px;
+.play-xs {
+  width: 26px; height: 26px;
   background: rgba(255,255,255,0.9);
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
 }
-.play-tri-sm {
+.play-tri-xs {
   width: 0; height: 0;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-left: 8px solid var(--charcoal);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 7px solid var(--black);
   margin-left: 2px;
 }
-.vid-side-info { flex: 1; }
 .vid-side-series {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  margin-bottom: 5px;
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  margin-bottom: 4px;
 }
 .vid-side-title {
-  font-weight: 600;
-  font-size: 14px;
-  color: white;
-  line-height: 1.3;
-  margin-bottom: 6px;
+  font-weight: 600; font-size: 13px;
+  color: white; line-height: 1.3; margin-bottom: 4px;
 }
-.vid-side-meta { font-size: 12px; color: rgba(255,255,255,0.35); }
+.vid-side-meta { font-size: 11px; color: rgba(255,255,255,0.3); }
+
 .tv-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  margin-top: 24px;
+  gap: 14px;
+  margin-top: 20px;
 }
-.vid-grid-card {
-  background: rgba(255,255,255,0.05);
-  border-radius: 12px;
+.vid-card {
+  background: rgba(255,255,255,0.04);
+  border-radius: 14px;
   overflow: hidden;
-  cursor: pointer;
-  transition: transform 0.2s, background 0.2s;
   text-decoration: none;
   display: block;
+  transition: transform 0.3s var(--ease-out-expo), background 0.2s;
 }
-.vid-grid-card:hover {
-  transform: translateY(-4px);
-  background: rgba(255,255,255,0.1);
+.vid-card:hover {
+  transform: translateY(-6px);
+  background: rgba(255,255,255,0.09);
 }
-.vid-grid-thumb {
-  height: 130px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.vid-card-thumb {
+  height: 120px;
+  display: flex; align-items: center; justify-content: center;
   position: relative;
 }
-.vid-grid-info { padding: 14px 16px 18px; }
-.vid-grid-series { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px; }
-.vid-grid-title { font-weight: 600; font-size: 13px; color: white; line-height: 1.35; margin-bottom: 6px; }
-.vid-grid-meta { font-size: 11px; color: rgba(255,255,255,0.35); }
+.vid-card-info { padding: 14px 16px 18px; }
+.vid-card-series { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 5px; }
+.vid-card-title { font-weight: 600; font-size: 12px; color: white; line-height: 1.35; margin-bottom: 5px; }
+.vid-card-meta { font-size: 10px; color: rgba(255,255,255,0.3); }
+
 .tv-view-all { display: flex; justify-content: center; margin-top: 56px; }
 
-/* WHY */
-.why-section { background: var(--teal); padding: 100px 48px; }
-.why-title {
-  font-family: 'Corben', cursive;
-  font-weight: 700;
-  font-size: clamp(52px, 8vw, 110px);
-  line-height: 0.92;
-  letter-spacing: -2.5px;
-  color: white;
-  margin-bottom: 80px;
+/* ── WHY SKYE ────────────────────────────────────── */
+.why {
+  background: var(--white);
+  color: var(--black);
+  padding: 120px 48px;
 }
 .why-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 3px;
+  gap: 2px;
+  margin-top: 80px;
 }
 .why-card {
-  background: rgba(255,255,255,0.15);
-  padding: 44px 36px;
+  padding: 48px 40px;
+  background: var(--cream);
   border-radius: 4px;
+  transition: background 0.25s;
 }
+.why-card:hover { background: #ede9e1; }
 .why-icon {
-  width: 48px; height: 48px;
-  border-radius: 50%;
+  width: 52px; height: 52px;
+  background: var(--black);
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  margin-bottom: 28px;
+}
+.why-title-card {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-size: 26px;
+  text-transform: uppercase;
+  letter-spacing: -0.3px;
+  color: var(--black);
+  margin-bottom: 14px;
+}
+.why-desc {
+  font-size: 15px;
+  color: #666;
+  line-height: 1.65;
+  font-weight: 400;
+}
+
+/* ── TESTIMONIALS ───────────────────────────────── */
+.testimonials {
+  background: var(--cream);
+  padding: 120px 48px;
+  color: var(--black);
+}
+.test-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 80px;
+}
+.test-card {
   background: white;
+  border-radius: 20px;
+  padding: 36px 32px;
+}
+.test-stars {
+  font-size: 16px;
+  letter-spacing: 3px;
+  color: var(--coral);
+  margin-bottom: 20px;
+}
+.test-quote {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #444;
+  margin-bottom: 28px;
+  font-style: italic;
+  font-weight: 400;
+}
+.test-name { font-weight: 700; font-size: 14px; color: var(--black); }
+.test-role { font-size: 12px; color: #aaa; margin-top: 3px; }
+
+/* ── CTA ────────────────────────────────────────── */
+.cta-section {
+  background: var(--black);
+  padding: 140px 48px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cta-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 28px;
+}
+.cta-heading {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-style: italic;
+  font-size: clamp(72px, 12vw, 165px);
+  line-height: 0.88;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: white;
+  margin-bottom: 52px;
+}
+.cta-heading em { color: var(--coral); }
+.cta-actions {
   display: flex;
-  align-items: center;
+  gap: 14px;
   justify-content: center;
-  margin-bottom: 24px;
-  font-size: 20px;
+  align-items: center;
 }
-.why-name {
-  font-family: 'Corben', cursive;
-  font-weight: 700;
-  font-size: 20px;
-  color: white;
-  margin-bottom: 12px;
+/* CTA background canvas */
+#cta-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  opacity: 0.6;
 }
-.why-desc { font-size: 15px; color: rgba(255,255,255,0.75); line-height: 1.65; }
 
-/* TESTIMONIALS */
-.testimonials { background: var(--yellow); padding: 100px 48px; }
-.test-title {
-  font-family: 'Corben', cursive;
-  font-weight: 700;
-  font-size: clamp(48px, 7vw, 90px);
-  line-height: 0.92;
-  letter-spacing: -2px;
-  color: var(--charcoal);
-  margin-bottom: 64px;
+/* ── FOOTER ─────────────────────────────────────── */
+footer {
+  background: #080a0f;
+  padding: 80px 48px 40px;
 }
-.test-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-.test-card { background: white; border-radius: 20px; padding: 36px 32px; }
-.test-stars { color: var(--coral); font-size: 18px; letter-spacing: 2px; margin-bottom: 20px; }
-.test-quote { font-size: 16px; line-height: 1.65; color: var(--charcoal); margin-bottom: 28px; font-style: italic; }
-.test-name { font-weight: 700; font-size: 14px; color: var(--charcoal); }
-.test-role { font-size: 13px; color: rgba(67,66,70,0.5); margin-top: 2px; }
-
-/* CTA */
-.cta-section { background: var(--mauve); padding: 120px 48px; text-align: center; }
-.cta-eyebrow {
-  font-size: 12px; font-weight: 700; letter-spacing: 3px;
-  text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 28px;
-}
-.cta-title {
-  font-family: 'Corben', cursive;
-  font-weight: 700;
-  font-size: clamp(52px, 8vw, 100px);
-  line-height: 0.92;
-  letter-spacing: -2px;
-  color: white;
-  margin-bottom: 48px;
-}
-.cta-actions { display: flex; gap: 16px; justify-content: center; }
-
-/* FOOTER */
-footer { background: var(--charcoal); padding: 80px 48px 40px; }
 .footer-top {
   display: grid;
   grid-template-columns: 1.5fr 1fr 1fr 1fr;
-  gap: 60px;
-  margin-bottom: 80px;
-}
-.footer-logo {
-  display: inline-block;
-  margin-bottom: 16px;
-  text-decoration: none;
+  gap: 56px;
+  margin-bottom: 72px;
+  padding-bottom: 72px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 .footer-logo img {
-  height: 40px;
-  width: auto;
-  display: block;
+  height: 34px;
   filter: brightness(0) invert(1);
+  margin-bottom: 16px;
 }
-.footer-tagline { font-size: 14px; color: rgba(255,255,255,0.45); line-height: 1.65; margin-bottom: 32px; max-width: 240px; }
-.footer-col-title { font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 20px; }
+.footer-tagline {
+  font-size: 13px;
+  color: rgba(255,255,255,0.35);
+  line-height: 1.7;
+  margin-bottom: 28px;
+  max-width: 220px;
+}
+.footer-col-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  margin-bottom: 20px;
+}
 .footer-links { list-style: none; }
 .footer-links li { margin-bottom: 12px; }
-.footer-links a { text-decoration: none; color: rgba(255,255,255,0.65); font-size: 14px; transition: color 0.2s; }
+.footer-links a {
+  font-size: 14px;
+  color: rgba(255,255,255,0.55);
+  transition: color 0.2s;
+}
 .footer-links a:hover { color: white; }
-.footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 32px; display: flex; justify-content: space-between; align-items: flex-start; gap: 40px; }
-.footer-legal { font-size: 12px; color: rgba(255,255,255,0.3); line-height: 1.6; max-width: 600px; }
-.footer-afs { font-size: 12px; color: rgba(255,255,255,0.3); flex-shrink: 0; }
-
-/* SCROLL REVEAL — visibility never blocked by CSS; GSAP handles entrances */
-.reveal { }
-
-/* PAGE BACKGROUND — fixed layer GSAP animates between section colours */
-#page-bg {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background: #F7F3EC;
-  will-change: background-color;
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
 }
+.footer-legal { font-size: 11px; color: rgba(255,255,255,0.2); line-height: 1.6; max-width: 580px; }
+.footer-afsl  { font-size: 11px; color: rgba(255,255,255,0.2); }
 
-/* Strip solid backgrounds from sections so page-bg bleeds through */
-.hero            { background: transparent; }
-.services-section{ background: transparent; }
-.skye-tv         { background: transparent; }
-.why-section     { background: transparent; }
-.testimonials    { background: transparent; }
-.cta-section     { background: transparent; }
-footer           { background: transparent; }
+/* ── MAGNETIC BUTTON WRAPPER ─────────────────────── */
+.mag { display: inline-block; }
 
-/* CANVAS AURORA */
-#hero-canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  opacity: 0;
-  mix-blend-mode: multiply;
-}
-
-/* GRAIN — disabled */
-.grain { display: none; }
-
-
-/* RESPONSIVE */
-@media (max-width: 768px) {
-  nav { padding: 16px 24px; }
+/* ── RESPONSIVE ─────────────────────────────────── */
+@media (max-width: 900px) {
+  .nav { padding: 16px 24px; }
   .nav-links { display: none; }
-  .hero { padding: 100px 24px 60px; }
+  .hero { padding: 0 24px 56px; }
   .hero-bottom { flex-direction: column; align-items: flex-start; }
-  .services-section, .skye-tv, .why-section, .testimonials, .cta-section { padding: 80px 24px; }
-  .services-grid { grid-template-columns: 1fr; }
-  .tv-featured { grid-template-columns: 1fr; }
+  .statement, .services, .skye-tv, .why, .testimonials, .cta-section { padding: 80px 24px; }
+  .statement-body { grid-template-columns: 1fr; }
+  .stack-layout { grid-template-columns: 1fr; }
+  .stack-container { height: 420px; }
+  .stack-card { width: 290px; height: 400px; }
+  .tv-featured-grid { grid-template-columns: 1fr; }
   .tv-grid { grid-template-columns: repeat(2, 1fr); }
-  .why-grid { grid-template-columns: 1fr; }
+  .why-grid { grid-template-columns: 1fr; gap: 2px; }
   .test-grid { grid-template-columns: 1fr; }
-  .cta-actions { flex-direction: column; align-items: center; }
-  .footer-top { grid-template-columns: 1fr; gap: 40px; }
-  .footer-bottom { flex-direction: column; }
+  .footer-top { grid-template-columns: 1fr; gap: 36px; }
+  .footer-bottom { flex-direction: column; align-items: flex-start; }
   footer { padding: 60px 24px 32px; }
+  .ticker-wrap { padding: 16px 24px; }
+  .cta-actions { flex-direction: column; }
+  .section-header { flex-direction: column; align-items: flex-start; }
+  .section-sub { text-align: left; }
 }
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
 </head>
 <body>
-<div class="grain"></div>
-<div id="page-bg"></div>
 
 <!-- NAV -->
-<nav>
-  <a href="https://www.skye.com.au/" class="nav-logo"><img src="https://images.squarespace-cdn.com/content/v1/5f449b1dad7e83270786baa8/1598331859086-TFA4TGNJQ3WU3DTWHN42/SKYE_logo.png?format=1500w" alt="Skye Wealth"></a>
+<nav class="nav" id="nav">
+  <a href="https://www.skye.com.au/" class="nav-logo">
+    <img src="https://images.squarespace-cdn.com/content/v1/5f449b1dad7e83270786baa8/1598331859086-TFA4TGNJQ3WU3DTWHN42/SKYE_logo.png?format=1500w" alt="Skye Wealth">
+  </a>
   <ul class="nav-links">
-    <li><a href="https://www.skye.com.au/life-insurance-advice">Life Insurance</a></li>
-    <li><a href="https://www.skye.com.au/insurance-review">Insurance Review</a></li>
-    <li><a href="https://www.skye.com.au/claims">Claims</a></li>
-    <li><a href="#skye-tv">Skye TV</a></li>
-    <li><a href="https://www.skye.com.au/about-skye-wealth">About</a></li>
-    <li><a href="https://www.skye.com.au/phone-call" class="nav-cta">Book a Call</a></li>
+    <li><a href="https://www.skye.com.au/life-insurance-advice" class="nav-link">Life Insurance</a></li>
+    <li><a href="https://www.skye.com.au/insurance-review" class="nav-link">Insurance Review</a></li>
+    <li><a href="https://www.skye.com.au/claims" class="nav-link">Claims</a></li>
+    <li><a href="#skye-tv" class="nav-link">Skye TV</a></li>
+    <li><a href="https://www.skye.com.au/about-skye-wealth" class="nav-link">About</a></li>
   </ul>
+  <a href="https://www.skye.com.au/phone-call" class="nav-cta">Book a Call</a>
 </nav>
 
 <!-- HERO -->
-<section class="hero">
+<section class="hero" id="hero">
   <canvas id="hero-canvas"></canvas>
-  <div class="shape shape-1"></div>
-  <div class="shape shape-2"></div>
-  <div class="shape shape-3"></div>
-  <div class="hero-eyebrow">Personalised Life Insurance Advice · Australia</div>
-  <h1 class="hero-title">
-    <div class="title-line">Life</div>
-    <div class="title-line">Insurance</div>
-    <div class="title-line title-line--serif">Simplified.</div>
+
+  <div class="hero-badge">
+    Personalised Life Insurance Advice · Australia
+  </div>
+
+  <h1 class="hero-heading">
+    <span class="reveal-line"><span class="inner">Life</span></span>
+    <span class="reveal-line"><span class="inner">Insurance,</span></span>
+    <span class="reveal-line"><span class="inner" style="color:var(--coral)">Simplified.</span></span>
   </h1>
+
   <div class="hero-bottom">
-    <p class="hero-sub">Protect the way you live now from the unexpected. Expert advice, zero jargon, always on your side.</p>
+    <p class="hero-sub">Protect the way you live now. Expert advice, zero jargon, always in your corner.</p>
     <div class="hero-actions">
-      <a href="https://www.skye.com.au/phone-call" class="btn-primary">Book a 15-min call</a>
-      <a href="https://www.skye.com.au/life-insurance-advice" class="btn-ghost">Learn more</a>
+      <a href="https://www.skye.com.au/phone-call" class="btn btn--coral mag">Book a free call</a>
+      <a href="https://www.skye.com.au/life-insurance-advice" class="btn btn--outline-white">Learn more</a>
     </div>
   </div>
 </section>
 
-<!-- MARQUEE -->
-<div class="marquee-wrap">
-<div class="marquee-strip">
-  <div class="marquee-inner">
-    <span class="marquee-item"><span class="marquee-dot" style="background:#f26861"></span>Income Protection</span>
-    <span class="marquee-item"><span class="marquee-dot" style="background:#79c8bf"></span>Total &amp; Permanent Disablement</span>
-    <span class="marquee-item"><span class="marquee-dot" style="background:#f7b2d1"></span>Death Cover</span>
-    <span class="marquee-item"><span class="marquee-dot" style="background:#fee290"></span>Trauma Cover</span>
-    <span class="marquee-item"><span class="marquee-dot" style="background:#c39bbd"></span>Insurance Review</span>
-    <span class="marquee-item"><span class="marquee-dot" style="background:#f26861"></span>Claims Support</span>
-    <span class="marquee-item"><span class="marquee-dot" style="background:#79c8bf"></span>Income Protection</span>
-    <span class="marquee-item"><span class="marquee-dot" style="background:#f7b2d1"></span>Total &amp; Permanent Disablement</span>
-    <span class="marquee-item"><span class="marquee-dot" style="background:#fee290"></span>Death Cover</span>
-    <span class="marquee-item"><span class="marquee-dot" style="background:#c39bbd"></span>Trauma Cover</span>
-    <span class="marquee-item"><span class="marquee-dot" style="background:#f26861"></span>Insurance Review</span>
-    <span class="marquee-item"><span class="marquee-dot" style="background:#79c8bf"></span>Claims Support</span>
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <div class="ticker-inner" id="ticker-inner">
+      <span class="ticker-item"><span class="ticker-dot" style="background:var(--coral)"></span>Income Protection</span>
+      <span class="ticker-item"><span class="ticker-dot" style="background:var(--teal)"></span>Total &amp; Permanent Disablement</span>
+      <span class="ticker-item"><span class="ticker-dot" style="background:var(--pink)"></span>Death Cover</span>
+      <span class="ticker-item"><span class="ticker-dot" style="background:var(--yellow)"></span>Trauma Cover</span>
+      <span class="ticker-item"><span class="ticker-dot" style="background:var(--mauve)"></span>Insurance Review</span>
+      <span class="ticker-item"><span class="ticker-dot" style="background:var(--coral)"></span>Claims Support</span>
+      <span class="ticker-item"><span class="ticker-dot" style="background:var(--teal)"></span>Income Protection</span>
+      <span class="ticker-item"><span class="ticker-dot" style="background:var(--pink)"></span>Total &amp; Permanent Disablement</span>
+      <span class="ticker-item"><span class="ticker-dot" style="background:var(--yellow)"></span>Death Cover</span>
+      <span class="ticker-item"><span class="ticker-dot" style="background:var(--mauve)"></span>Trauma Cover</span>
+      <span class="ticker-item"><span class="ticker-dot" style="background:var(--coral)"></span>Insurance Review</span>
+      <span class="ticker-item"><span class="ticker-dot" style="background:var(--teal)"></span>Claims Support</span>
+    </div>
   </div>
 </div>
-</div>
 
-<!-- SERVICES -->
-<section class="services-section reveal">
-  <p class="section-label" style="color:rgba(255,255,255,0.6)">What we cover</p>
-  <h2 class="services-title">Complete<br>Coverage.</h2>
-  <div class="services-grid">
-    <a href="https://www.skye.com.au/life-insurance-advice" class="service-card">
-      <div class="service-num">01</div>
-      <div class="service-name">Income Protection</div>
-      <div class="service-desc">Your income is your most valuable asset. If illness or injury stops you working, we make sure your life doesn't stop too.</div>
-      <div class="service-arrow">→</div>
-    </a>
-    <a href="https://www.skye.com.au/life-insurance-advice" class="service-card">
-      <div class="service-num">02</div>
-      <div class="service-name">TPD Cover</div>
-      <div class="service-desc">If you're permanently unable to work, TPD cover clears debts, covers care costs, and rebuilds your financial foundation.</div>
-      <div class="service-arrow">→</div>
-    </a>
-    <a href="https://www.skye.com.au/life-insurance-advice" class="service-card">
-      <div class="service-num">03</div>
-      <div class="service-name">Death Cover</div>
-      <div class="service-desc">Protect the people who depend on you. A lump sum payment that keeps your family's future secure when it matters most.</div>
-      <div class="service-arrow">→</div>
-    </a>
-    <a href="https://www.skye.com.au/life-insurance-advice" class="service-card">
-      <div class="service-num">04</div>
-      <div class="service-name">Trauma Cover</div>
-      <div class="service-desc">Cancer, heart attack, stroke — an immediate payment so you can focus on recovery, not bills.</div>
-      <div class="service-arrow">→</div>
-    </a>
+<!-- STATEMENT -->
+<section class="statement">
+  <div class="statement-label">The Skye Difference</div>
+  <h2 class="statement-heading">
+    <span class="reveal-line"><span class="inner">Zero jargon.</span></span>
+    <span class="reveal-line"><span class="inner">Zero <em>pressure.</em></span></span>
+  </h2>
+  <div class="statement-body">
+    <p class="statement-copy">
+      We're qualified advisers who sit on your side of the table — not the insurer's. We explain everything in plain English, recommend only what fits your life, and support you all the way through to claim.
+    </p>
+    <div class="statement-stats">
+      <div class="stat-box">
+        <div class="stat-num">500<em>+</em></div>
+        <div class="stat-label">Australians advised</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">12<em>yrs</em></div>
+        <div class="stat-label">Industry experience</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">5<em>★</em></div>
+        <div class="stat-label">Average client rating</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">100<em>%</em></div>
+        <div class="stat-label">Independent advice</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES — CARD STACK -->
+<section class="services" id="services">
+  <div class="section-header">
+    <div>
+      <div class="section-label">What we cover</div>
+      <h2 class="section-heading">
+        <span class="reveal-line"><span class="inner">Complete</span></span>
+        <span class="reveal-line"><span class="inner"><em>Coverage.</em></span></span>
+      </h2>
+    </div>
+    <p class="section-sub">Drag or tap the cards to explore each type of cover we advise on.</p>
+  </div>
+
+  <div class="stack-layout">
+    <!-- Card stack -->
+    <div class="stack-container" id="card-stack">
+      <div class="stack-card card--coral" data-index="0">
+        <div>
+          <div class="card-num">01 / 04</div>
+        </div>
+        <div class="card-icon">🛡️</div>
+        <div>
+          <div class="card-title">Income<br>Protection</div>
+          <div class="card-desc" style="margin-top:12px">Your income is your greatest asset. If illness or injury stops you working, we make sure your life doesn't stop too.</div>
+        </div>
+        <a href="https://www.skye.com.au/life-insurance-advice" class="card-cta">Learn more →</a>
+      </div>
+
+      <div class="stack-card card--teal" data-index="1">
+        <div>
+          <div class="card-num">02 / 04</div>
+        </div>
+        <div class="card-icon">⚓</div>
+        <div>
+          <div class="card-title">TPD<br>Cover</div>
+          <div class="card-desc" style="margin-top:12px">If you're permanently unable to work, TPD cover clears debts, covers care costs and rebuilds your financial foundation.</div>
+        </div>
+        <a href="https://www.skye.com.au/life-insurance-advice" class="card-cta">Learn more →</a>
+      </div>
+
+      <div class="stack-card card--mauve" data-index="2">
+        <div>
+          <div class="card-num">03 / 04</div>
+        </div>
+        <div class="card-icon">🏠</div>
+        <div>
+          <div class="card-title">Death<br>Cover</div>
+          <div class="card-desc" style="margin-top:12px">Protect the people who depend on you. A lump sum that keeps your family's future secure when it matters most.</div>
+        </div>
+        <a href="https://www.skye.com.au/life-insurance-advice" class="card-cta">Learn more →</a>
+      </div>
+
+      <div class="stack-card card--yellow" data-index="3">
+        <div>
+          <div class="card-num">04 / 04</div>
+        </div>
+        <div class="card-icon">❤️</div>
+        <div>
+          <div class="card-title">Trauma<br>Cover</div>
+          <div class="card-desc" style="margin-top:12px">Cancer, heart attack, stroke — an immediate payment so you can focus entirely on recovery, not bills.</div>
+        </div>
+        <a href="https://www.skye.com.au/life-insurance-advice" class="card-cta">Learn more →</a>
+      </div>
+    </div>
+
+    <!-- Stack info panel -->
+    <div class="stack-info">
+      <div class="stack-counter"><span id="stack-current">01</span> / <span style="opacity:0.3">04</span></div>
+      <div class="stack-counter-label">Cover type</div>
+      <div class="stack-nav">
+        <button class="stack-btn" id="stack-prev" aria-label="Previous">←</button>
+        <button class="stack-btn" id="stack-next" aria-label="Next">→</button>
+      </div>
+      <div class="stack-titles" id="stack-titles">
+        <div class="stack-title-item is-active" data-idx="0">Income Protection</div>
+        <div class="stack-title-item" data-idx="1">TPD Cover</div>
+        <div class="stack-title-item" data-idx="2">Death Cover</div>
+        <div class="stack-title-item" data-idx="3">Trauma Cover</div>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- SKYE TV -->
-<section class="skye-tv reveal" id="skye-tv">
+<section class="skye-tv" id="skye-tv">
   <div class="tv-header">
-    <div class="tv-title">
+    <h2 class="tv-heading">
       <span class="t-skye">Skye</span><br>
       <span class="t-tv">TV</span>
-    </div>
-    <div style="text-align:right;padding-bottom:12px">
-      <p class="tv-sub">Your life insurance media centre — deep dives, claims stories, expert explainers and more.</p>
-      <a href="https://www.youtube.com/@skyewealth" class="btn-primary" style="font-size:14px;padding:12px 28px">View all on YouTube →</a>
+    </h2>
+    <div>
+      <p class="tv-sub">Your life insurance media hub — deep dives, claims stories and plain-English explainers.</p>
+      <a href="https://www.youtube.com/@skyewealth" class="btn btn--coral" style="font-size:13px;padding:11px 24px">All episodes on YouTube →</a>
     </div>
   </div>
+
   <div class="tv-tabs">
     <button class="tv-tab active">All</button>
     <button class="tv-tab">Deep Dive</button>
@@ -839,48 +1201,49 @@ footer           { background: transparent; }
     <button class="tv-tab">Skye Simplifies</button>
     <button class="tv-tab">Industry Updates</button>
   </div>
-  <div class="tv-featured">
-    <a href="https://www.skye.com.au/" class="vid-featured">
-      <div class="vid-thumb-lg" style="background:var(--teal)">
+
+  <div class="tv-featured-grid">
+    <a href="https://www.skye.com.au/" class="vid-main">
+      <div class="vid-thumb" style="background:var(--teal)">
         <div class="vid-thumb-bg"></div>
         <div class="play-btn"><div class="play-tri"></div></div>
         <div class="vid-badge">Latest</div>
         <div class="vid-duration">18:42</div>
       </div>
       <div class="vid-info">
-        <div class="vid-series">Deep Dive</div>
-        <div class="vid-title-lg">Zurich's 2026 Pricing Update — What It Means for Your Cover</div>
+        <div class="vid-series" style="color:var(--teal)">Deep Dive</div>
+        <div class="vid-title">Zurich's 2026 Pricing Update — What It Means for Your Cover</div>
         <div class="vid-meta">Phil &amp; Trent · 2 days ago</div>
       </div>
     </a>
-    <div class="tv-side">
+    <div class="tv-side-list">
       <a href="https://www.skye.com.au/" class="vid-side">
-        <div class="vid-thumb-sm" style="background:var(--coral)"><div class="play-sm"><div class="play-tri-sm"></div></div></div>
-        <div class="vid-side-info">
+        <div class="vid-side-thumb" style="background:var(--coral)"><div class="play-xs"><div class="play-tri-xs"></div></div></div>
+        <div>
           <div class="vid-side-series" style="color:var(--coral)">Claims Corner</div>
           <div class="vid-side-title">How We Got a TPD Claim Paid in 6 Weeks</div>
           <div class="vid-side-meta">Phil · 1 week ago · 12:08</div>
         </div>
       </a>
       <a href="https://www.skye.com.au/" class="vid-side">
-        <div class="vid-thumb-sm" style="background:var(--mauve)"><div class="play-sm"><div class="play-tri-sm"></div></div></div>
-        <div class="vid-side-info">
+        <div class="vid-side-thumb" style="background:var(--mauve)"><div class="play-xs"><div class="play-tri-xs"></div></div></div>
+        <div>
           <div class="vid-side-series" style="color:var(--mauve)">Tell Us More</div>
           <div class="vid-side-title">What Is Agreed Value Income Protection?</div>
           <div class="vid-side-meta">Trent · 2 weeks ago · 9:30</div>
         </div>
       </a>
       <a href="https://www.skye.com.au/" class="vid-side">
-        <div class="vid-thumb-sm" style="background:var(--yellow)"><div class="play-sm"><div class="play-tri-sm"></div></div></div>
-        <div class="vid-side-info">
+        <div class="vid-side-thumb" style="background:var(--yellow)"><div class="play-xs"><div class="play-tri-xs"></div></div></div>
+        <div>
           <div class="vid-side-series" style="color:var(--yellow)">Skye Simplifies</div>
           <div class="vid-side-title">TPD vs Income Protection — What's the Difference?</div>
           <div class="vid-side-meta">Phil · 3 weeks ago · 7:15</div>
         </div>
       </a>
       <a href="https://www.skye.com.au/" class="vid-side">
-        <div class="vid-thumb-sm" style="background:var(--pink)"><div class="play-sm"><div class="play-tri-sm"></div></div></div>
-        <div class="vid-side-info">
+        <div class="vid-side-thumb" style="background:var(--pink)"><div class="play-xs"><div class="play-tri-xs"></div></div></div>
+        <div>
           <div class="vid-side-series" style="color:var(--pink)">Tell Us More</div>
           <div class="vid-side-title">Rate Lock Explained — Should You Have It?</div>
           <div class="vid-side-meta">Trent · 1 month ago · 11:22</div>
@@ -888,83 +1251,91 @@ footer           { background: transparent; }
       </a>
     </div>
   </div>
+
   <div class="tv-grid">
-    <a href="https://www.skye.com.au/" class="vid-grid-card">
-      <div class="vid-grid-thumb" style="background:var(--coral)">
-        <div class="play-sm"><div class="play-tri-sm"></div></div>
-        <div class="vid-duration" style="bottom:10px;right:10px">6:44</div>
+    <a href="https://www.skye.com.au/" class="vid-card">
+      <div class="vid-card-thumb" style="background:var(--coral)">
+        <div class="play-xs"><div class="play-tri-xs"></div></div>
+        <div class="vid-duration" style="bottom:8px;right:8px">6:44</div>
       </div>
-      <div class="vid-grid-info">
-        <div class="vid-grid-series" style="color:var(--coral)">Skye Simplifies</div>
-        <div class="vid-grid-title">What Is the Soft Cap on TPD?</div>
-        <div class="vid-grid-meta">1 month ago</div>
-      </div>
-    </a>
-    <a href="https://www.skye.com.au/" class="vid-grid-card">
-      <div class="vid-grid-thumb" style="background:var(--teal)">
-        <div class="play-sm"><div class="play-tri-sm"></div></div>
-        <div class="vid-duration" style="bottom:10px;right:10px">14:20</div>
-      </div>
-      <div class="vid-grid-info">
-        <div class="vid-grid-series" style="color:var(--teal)">Deep Dive</div>
-        <div class="vid-grid-title">Life Co-Ownership Arrangements &amp; New Premium Class</div>
-        <div class="vid-grid-meta">5 weeks ago</div>
+      <div class="vid-card-info">
+        <div class="vid-card-series" style="color:var(--coral)">Skye Simplifies</div>
+        <div class="vid-card-title">What Is the Soft Cap on TPD?</div>
+        <div class="vid-card-meta">1 month ago</div>
       </div>
     </a>
-    <a href="https://www.skye.com.au/" class="vid-grid-card">
-      <div class="vid-grid-thumb" style="background:var(--mauve)">
-        <div class="play-sm"><div class="play-tri-sm"></div></div>
-        <div class="vid-duration" style="bottom:10px;right:10px">8:55</div>
+    <a href="https://www.skye.com.au/" class="vid-card">
+      <div class="vid-card-thumb" style="background:var(--teal)">
+        <div class="play-xs"><div class="play-tri-xs"></div></div>
+        <div class="vid-duration" style="bottom:8px;right:8px">14:20</div>
       </div>
-      <div class="vid-grid-info">
-        <div class="vid-grid-series" style="color:var(--mauve)">Claims Corner</div>
-        <div class="vid-grid-title">Income Protection Claims — Our Process</div>
-        <div class="vid-grid-meta">6 weeks ago</div>
+      <div class="vid-card-info">
+        <div class="vid-card-series" style="color:var(--teal)">Deep Dive</div>
+        <div class="vid-card-title">Life Co-Ownership &amp; New Premium Class</div>
+        <div class="vid-card-meta">5 weeks ago</div>
       </div>
     </a>
-    <a href="https://www.skye.com.au/" class="vid-grid-card">
-      <div class="vid-grid-thumb" style="background:var(--yellow)">
-        <div class="play-sm"><div class="play-tri-sm"></div></div>
-        <div class="vid-duration" style="bottom:10px;right:10px">10:03</div>
+    <a href="https://www.skye.com.au/" class="vid-card">
+      <div class="vid-card-thumb" style="background:var(--mauve)">
+        <div class="play-xs"><div class="play-tri-xs"></div></div>
+        <div class="vid-duration" style="bottom:8px;right:8px">8:55</div>
       </div>
-      <div class="vid-grid-info">
-        <div class="vid-grid-series" style="color:var(--yellow)">Tell Us More</div>
-        <div class="vid-grid-title">iExtend — What Is It and Do You Need It?</div>
-        <div class="vid-grid-meta">7 weeks ago</div>
+      <div class="vid-card-info">
+        <div class="vid-card-series" style="color:var(--mauve)">Claims Corner</div>
+        <div class="vid-card-title">Income Protection Claims — Our Process</div>
+        <div class="vid-card-meta">6 weeks ago</div>
+      </div>
+    </a>
+    <a href="https://www.skye.com.au/" class="vid-card">
+      <div class="vid-card-thumb" style="background:var(--yellow)">
+        <div class="play-xs"><div class="play-tri-xs"></div></div>
+        <div class="vid-duration" style="bottom:8px;right:8px">10:03</div>
+      </div>
+      <div class="vid-card-info">
+        <div class="vid-card-series" style="color:var(--yellow)">Tell Us More</div>
+        <div class="vid-card-title">iExtend — What Is It and Do You Need It?</div>
+        <div class="vid-card-meta">7 weeks ago</div>
       </div>
     </a>
   </div>
   <div class="tv-view-all">
-    <a href="https://www.youtube.com/@skyewealth" class="btn-outline-white" style="border-color:rgba(255,255,255,0.25);color:rgba(255,255,255,0.7)">Explore all episodes on YouTube →</a>
+    <a href="https://www.youtube.com/@skyewealth" class="btn btn--outline-white" style="opacity:0.6">Explore all episodes on YouTube →</a>
   </div>
 </section>
 
 <!-- WHY SKYE -->
-<section class="why-section reveal">
-  <p class="section-label" style="color:rgba(255,255,255,0.6)">The Skye difference</p>
-  <h2 class="why-title">Why<br>Choose<br>Skye?</h2>
+<section class="why">
+  <div class="section-label" style="color:var(--coral)">The Skye difference</div>
+  <h2 class="section-heading" style="color:var(--black);margin-top:0">
+    <span class="reveal-line"><span class="inner">Why choose</span></span>
+    <span class="reveal-line"><span class="inner"><em>Skye?</em></span></span>
+  </h2>
   <div class="why-grid">
     <div class="why-card">
       <div class="why-icon">💻</div>
-      <div class="why-name">We Come to You</div>
+      <div class="why-title-card">We Come to You</div>
       <div class="why-desc">No office visits, no paperwork piles. We meet you online, on your terms, when it suits you.</div>
     </div>
     <div class="why-card">
       <div class="why-icon">🎯</div>
-      <div class="why-name">Advice, Not Sales</div>
-      <div class="why-desc">Qualified advisers who recommend what fits — not what pays the highest commission.</div>
+      <div class="why-title-card">Advice, Not Sales</div>
+      <div class="why-desc">Qualified advisers who recommend what fits your life — not what earns the highest commission.</div>
     </div>
     <div class="why-card">
       <div class="why-icon">🤝</div>
-      <div class="why-name">Always Transparent</div>
-      <div class="why-desc">Straight answers, plain language. You won't be signing anything until you're genuinely comfortable.</div>
+      <div class="why-title-card">Always Transparent</div>
+      <div class="why-desc">Straight answers, plain language. You won't sign anything until you're genuinely comfortable.</div>
     </div>
   </div>
 </section>
 
 <!-- TESTIMONIALS -->
-<section class="testimonials reveal">
-  <h2 class="test-title">What our<br>clients say.</h2>
+<section class="testimonials">
+  <div class="section-label">Client stories</div>
+  <h2 class="section-heading" style="color:var(--black)">
+    <span class="reveal-line"><span class="inner">What our</span></span>
+    <span class="reveal-line"><span class="inner"><em>clients say.</em></span></span>
+  </h2>
   <div class="test-grid">
     <div class="test-card">
       <div class="test-stars">★★★★★</div>
@@ -980,7 +1351,7 @@ footer           { background: transparent; }
     </div>
     <div class="test-card">
       <div class="test-stars">★★★★★</div>
-      <p class="test-quote">"The review they did saved me over $2,000 a year with better cover. Wish I'd done it years ago. The whole process was so easy."</p>
+      <p class="test-quote">"The review saved me over $2,000 a year with better cover. Wish I'd done it years ago. The whole process was so easy."</p>
       <div class="test-name">Priya K.</div>
       <div class="test-role">Brisbane, QLD</div>
     </div>
@@ -988,12 +1359,16 @@ footer           { background: transparent; }
 </section>
 
 <!-- CTA -->
-<section class="cta-section reveal">
-  <p class="cta-eyebrow">Got 15 minutes?</p>
-  <h2 class="cta-title">Sort your<br>cover today.</h2>
+<section class="cta-section">
+  <canvas id="cta-canvas"></canvas>
+  <div class="cta-label">Got 15 minutes?</div>
+  <h2 class="cta-heading">
+    <span class="reveal-line"><span class="inner">Sort your</span></span>
+    <span class="reveal-line"><span class="inner">cover <em>today.</em></span></span>
+  </h2>
   <div class="cta-actions">
-    <a href="https://www.skye.com.au/phone-call" class="btn-white">Book a free call</a>
-    <a href="https://www.skye.com.au/insurance-review" class="btn-outline-white">Get a review</a>
+    <a href="https://www.skye.com.au/phone-call" class="btn btn--coral mag">Book a free call</a>
+    <a href="https://www.skye.com.au/insurance-review" class="btn btn--outline-white">Get a review</a>
   </div>
 </section>
 
@@ -1001,9 +1376,11 @@ footer           { background: transparent; }
 <footer>
   <div class="footer-top">
     <div>
-      <a href="https://www.skye.com.au/" class="footer-logo"><img src="https://images.squarespace-cdn.com/content/v1/5f449b1dad7e83270786baa8/1598331859086-TFA4TGNJQ3WU3DTWHN42/SKYE_logo.png?format=1500w" alt="Skye Wealth"></a>
+      <a href="https://www.skye.com.au/" class="footer-logo">
+        <img src="https://images.squarespace-cdn.com/content/v1/5f449b1dad7e83270786baa8/1598331859086-TFA4TGNJQ3WU3DTWHN42/SKYE_logo.png?format=1500w" alt="Skye Wealth">
+      </a>
       <p class="footer-tagline">Personalised life insurance advice for Australians. Always transparent, always on your side.</p>
-      <a href="https://www.skye.com.au/phone-call" class="btn-primary" style="font-size:14px;padding:12px 28px">Book a call →</a>
+      <a href="https://www.skye.com.au/phone-call" class="btn btn--coral" style="font-size:13px;padding:11px 24px">Book a call →</a>
     </div>
     <div>
       <div class="footer-col-title">Services</div>
@@ -1033,339 +1410,407 @@ footer           { background: transparent; }
     </div>
   </div>
   <div class="footer-bottom">
-    <p class="footer-legal">© 2026 Skye Wealth. Thompson Financial Services Pty Ltd ACN 162 326 552 t/as Skye Wealth is a Corporate Authorised Representative of Skye Money, AFS License No. 545313. The information contained herein is of a general nature only and does not constitute personal advice.</p>
-    <p class="footer-afs">AFSL 545313</p>
+    <p class="footer-legal">© 2026 Skye Wealth. Thompson Financial Services Pty Ltd ACN 162 326 552 t/as Skye Wealth is a Corporate Authorised Representative of Skye Money, AFS License No. 545313. General advice only.</p>
+    <p class="footer-afsl">AFSL 545313</p>
   </div>
 </footer>
 
 <script>
-/* ─────────────────────────────────────────
+/* ════════════════════════════════════════════════
    1. LENIS SMOOTH SCROLL
-───────────────────────────────────────── */
+════════════════════════════════════════════════ */
 const lenis = new Lenis({
-  duration: 1.3,
+  duration: 1.25,
   easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
   smoothWheel: true,
 });
 lenis.on('scroll', ScrollTrigger.update);
-gsap.ticker.add(time => lenis.raf(time * 1000));
+gsap.ticker.add(t => lenis.raf(t * 1000));
 gsap.ticker.lagSmoothing(0);
-
-/* ─────────────────────────────────────────
-   2. GSAP PLUGINS
-───────────────────────────────────────── */
 gsap.registerPlugin(ScrollTrigger);
 
-/* ─────────────────────────────────────────
-   3. CANVAS AURORA HERO BACKGROUND
-───────────────────────────────────────── */
-const canvas = document.getElementById('hero-canvas');
-const ctx = canvas.getContext('2d');
-let CW, CH;
+/* ════════════════════════════════════════════════
+   2. AURORA CANVAS — HERO
+════════════════════════════════════════════════ */
+(function() {
+  const canvas = document.getElementById('hero-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H;
 
-function resizeCanvas() {
-  CW = canvas.width  = canvas.offsetWidth;
-  CH = canvas.height = canvas.offsetHeight;
-}
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
+  function resize() {
+    W = canvas.width  = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
 
-const orbDefs = [
-  { color: '#f26861', cx: 0.75, cy: 0.30, rx: 0.18, ry: 0.12, size: 0.55, speed: 0.00035, phase: 0.0 },
-  { color: '#c39bbd', cx: 0.85, cy: 0.65, rx: 0.14, ry: 0.10, size: 0.45, speed: 0.00028, phase: 1.2 },
-  { color: '#79c8bf', cx: 0.65, cy: 0.80, rx: 0.12, ry: 0.14, size: 0.40, speed: 0.00042, phase: 2.5 },
-  { color: '#fee290', cx: 0.55, cy: 0.20, rx: 0.10, ry: 0.09, size: 0.35, speed: 0.00050, phase: 3.8 },
-  { color: '#f7b2d1', cx: 0.90, cy: 0.45, rx: 0.08, ry: 0.11, size: 0.30, speed: 0.00038, phase: 5.1 },
-];
+  const orbs = [
+    { color: '#f26861', cx:0.72, cy:0.28, rx:0.20, ry:0.14, r:0.50, spd:0.00032, ph:0.0  },
+    { color: '#c39bbd', cx:0.85, cy:0.62, rx:0.14, ry:0.12, r:0.42, spd:0.00025, ph:1.3  },
+    { color: '#79c8bf', cx:0.60, cy:0.80, rx:0.12, ry:0.16, r:0.38, spd:0.00040, ph:2.6  },
+    { color: '#fee290', cx:0.50, cy:0.18, rx:0.10, ry:0.10, r:0.30, spd:0.00048, ph:4.0  },
+    { color: '#f7b2d1', cx:0.90, cy:0.45, rx:0.08, ry:0.12, r:0.28, spd:0.00036, ph:5.2  },
+  ];
 
-let auroraT = 0;
-function drawAurora() {
-  auroraT += 16;
-  ctx.clearRect(0, 0, CW, CH);
-  orbDefs.forEach(o => {
-    const x = CW * o.cx + Math.cos(auroraT * o.speed + o.phase) * CW * o.rx;
-    const y = CH * o.cy + Math.sin(auroraT * o.speed * 1.3 + o.phase) * CH * o.ry;
-    const r = Math.min(CW, CH) * o.size;
-    const g = ctx.createRadialGradient(x, y, 0, x, y, r);
-    g.addColorStop(0,   o.color + 'BB');
-    g.addColorStop(0.5, o.color + '55');
-    g.addColorStop(1,   o.color + '00');
-    ctx.fillStyle = g;
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.fill();
-  });
-  requestAnimationFrame(drawAurora);
-}
-drawAurora();
-gsap.to('#hero-canvas', { opacity: 1, duration: 2.5, delay: 0.8, ease: 'power2.out' });
+  let t = 0;
+  function draw() {
+    t += 16;
+    ctx.clearRect(0, 0, W, H);
+    orbs.forEach(o => {
+      const x = W * o.cx + Math.cos(t * o.spd + o.ph) * W * o.rx;
+      const y = H * o.cy + Math.sin(t * o.spd * 1.3 + o.ph) * H * o.ry;
+      const r = Math.min(W, H) * o.r;
+      const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+      g.addColorStop(0,   o.color + '30');
+      g.addColorStop(0.5, o.color + '14');
+      g.addColorStop(1,   o.color + '00');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
 
-/* ─────────────────────────────────────────
-   4. PROCEDURAL FILM GRAIN
-───────────────────────────────────────── */
-const grainCanvas = document.createElement('canvas');
-grainCanvas.width = grainCanvas.height = 256;
-const gc = grainCanvas.getContext('2d');
-const gd = gc.createImageData(256, 256);
-for (let i = 0; i < gd.data.length; i += 4) {
-  const v = Math.random() * 255 | 0;
-  gd.data[i] = gd.data[i+1] = gd.data[i+2] = v;
-  gd.data[i+3] = 255;
-}
-gc.putImageData(gd, 0, 0);
-const grainEl = document.querySelector('.grain');
-grainEl.style.backgroundImage = `url(${grainCanvas.toDataURL()})`;
+/* CTA canvas — reuse aurora on dark */
+(function() {
+  const canvas = document.getElementById('cta-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H;
+  function resize() {
+    W = canvas.width  = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  const orbs = [
+    { color:'#f26861', cx:0.2, cy:0.5, rx:0.3, ry:0.3, r:0.6, spd:0.00028, ph:0 },
+    { color:'#c39bbd', cx:0.8, cy:0.5, rx:0.3, ry:0.3, r:0.5, spd:0.00022, ph:2 },
+  ];
+  let t = 0;
+  function draw() {
+    t += 16;
+    ctx.clearRect(0, 0, W, H);
+    orbs.forEach(o => {
+      const x = W * o.cx + Math.cos(t * o.spd + o.ph) * W * o.rx;
+      const y = H * o.cy + Math.sin(t * o.spd + o.ph) * H * o.ry;
+      const r = Math.min(W, H) * o.r;
+      const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+      g.addColorStop(0,   o.color + '28');
+      g.addColorStop(1,   o.color + '00');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
 
-/* ─────────────────────────────────────────
-   5. MAGNETIC BUTTONS
-───────────────────────────────────────── */
-document.querySelectorAll('.btn-primary, .btn-white, .nav-cta').forEach(btn => {
-  btn.addEventListener('mousemove', e => {
-    const r  = btn.getBoundingClientRect();
-    const dx = (e.clientX - (r.left + r.width  / 2)) * 0.38;
-    const dy = (e.clientY - (r.top  + r.height / 2)) * 0.38;
-    gsap.to(btn, { x: dx, y: dy, duration: 0.35, ease: 'power2.out' });
-  });
-  btn.addEventListener('mouseleave', () => {
-    gsap.to(btn, { x: 0, y: 0, duration: 0.7, ease: 'elastic.out(1.1, 0.4)' });
-  });
+/* ════════════════════════════════════════════════
+   3. NAV — DARK → LIGHT ON SCROLL
+════════════════════════════════════════════════ */
+const nav = document.getElementById('nav');
+ScrollTrigger.create({
+  trigger: '#hero',
+  start: 'bottom 72px',
+  onEnter:     () => nav.classList.add('is-light'),
+  onLeaveBack: () => nav.classList.remove('is-light'),
 });
 
-/* ─────────────────────────────────────────
-   7. HERO TEXT SPLIT & ENTRANCE
-───────────────────────────────────────── */
-document.querySelectorAll('.title-line').forEach(line => {
-  line.innerHTML = [...line.textContent].map(c =>
-    `<span class="char">${c === ' ' ? '\u00A0' : c}</span>`
-  ).join('');
-});
+/* ════════════════════════════════════════════════
+   4. NAV ENTRANCE
+════════════════════════════════════════════════ */
+gsap.from(nav, { y: -70, opacity: 0, duration: 1, ease: 'power3.out', delay: 0.1 });
 
-const heroTL = gsap.timeline({ delay: 0.2 });
+/* ════════════════════════════════════════════════
+   5. HERO REVEAL — lines slide up from clip
+════════════════════════════════════════════════ */
+const heroTL = gsap.timeline({ delay: 0.25 });
 heroTL
-  .from('.hero-eyebrow', {
-    y: 28, opacity: 0, duration: 0.9, ease: 'power3.out'
-  })
-  .from('.hero-title .char', {
-    y: '115%',
-    opacity: 0,
-    rotationZ: i => (i % 2 === 0 ? 6 : -6),
-    duration: 0.65,
+  .from('.hero-badge', { y: 20, opacity: 0, duration: 0.8, ease: 'power3.out' })
+  .from('.hero-heading .inner', {
+    y: '105%',
+    duration: 1,
     ease: 'power4.out',
-    stagger: { amount: 0.55 },
-  }, '-=0.5')
-  .from('.hero-sub', {
-    y: 22, opacity: 0, duration: 0.8, ease: 'power3.out'
-  }, '-=0.35')
-  .from('.hero-actions > *', {
-    y: 18, opacity: 0, scale: 0.92,
-    duration: 0.6, ease: 'back.out(1.7)', stagger: 0.12
-  }, '-=0.5');
+    stagger: 0.14,
+  }, '-=0.4')
+  .from('.hero-sub', { y: 20, opacity: 0, duration: 0.8, ease: 'power3.out' }, '-=0.5')
+  .from('.hero-actions .btn', {
+    y: 16, opacity: 0, scale: 0.95,
+    duration: 0.6, ease: 'back.out(1.8)', stagger: 0.1
+  }, '-=0.4');
 
-/* ─────────────────────────────────────────
-   8. HERO SHAPES PARALLAX
-───────────────────────────────────────── */
-[
-  ['.shape-1', -220],
-  ['.shape-2', -130],
-  ['.shape-3', -70],
-].forEach(([sel, y]) => {
-  gsap.to(sel, {
-    y,
-    ease: 'none',
-    scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true }
-  });
-});
-
-/* ─────────────────────────────────────────
-   9. MARQUEE — SCROLL VELOCITY RESPONSIVE
-───────────────────────────────────────── */
-const marqueeEl = document.querySelector('.marquee-inner');
-marqueeEl.style.animation = 'none';
-// Wait one frame so scrollWidth is available
+/* ════════════════════════════════════════════════
+   6. TICKER — velocity responsive
+════════════════════════════════════════════════ */
 requestAnimationFrame(() => {
-  const mWidth = marqueeEl.scrollWidth / 2;
-  const marqueeAnim = gsap.to(marqueeEl, {
-    x: -mWidth, duration: 22, ease: 'none', repeat: -1,
-  });
-
+  const inner = document.getElementById('ticker-inner');
+  inner.style.animation = 'none';
+  const w = inner.scrollWidth / 2;
+  const anim = gsap.to(inner, { x: -w, duration: 24, ease: 'none', repeat: -1 });
   let velTimer;
   let lastY = window.scrollY;
   window.addEventListener('scroll', () => {
     const vel = Math.abs(window.scrollY - lastY);
     lastY = window.scrollY;
-    const ts = Math.min(5, 1 + vel * 0.18);
-    marqueeAnim.timeScale(ts);
+    anim.timeScale(Math.min(5, 1 + vel * 0.2));
     clearTimeout(velTimer);
     velTimer = setTimeout(() => {
-      gsap.to(marqueeAnim, { timeScale: 1, duration: 1.4, ease: 'power2.inOut' });
-    }, 180);
+      gsap.to(anim, { timeScale: 1, duration: 1.2, ease: 'power2.inOut' });
+    }, 200);
   }, { passive: true });
 });
 
-/* ─────────────────────────────────────────
-   10. NAV ENTRANCE
-───────────────────────────────────────── */
-gsap.from('nav', {
-  y: -80, opacity: 0, duration: 1, ease: 'power3.out', delay: 0.1
-});
-
-/* ─────────────────────────────────────────
-   11. SECTION BACKGROUND COLOUR TRANSITIONS
-   As each section enters, the whole screen
-   smoothly transitions to that section's colour
-───────────────────────────────────────── */
-const pageBg = document.getElementById('page-bg');
-
-const sectionColours = [
-  { el: '.hero',             color: '#F7F3EC' },
-  { el: '.marquee-wrap',     color: '#F7F3EC' },
-  { el: '.services-section', color: '#f26861' },
-  { el: '.skye-tv',          color: '#434246' },
-  { el: '.why-section',      color: '#79c8bf' },
-  { el: '.testimonials',     color: '#fee290' },
-  { el: '.cta-section',      color: '#c39bbd' },
-  { el: 'footer',            color: '#434246' },
-];
-
-sectionColours.forEach(({ el, color }) => {
-  const trigger = document.querySelector(el);
-  if (!trigger) return;
-  ScrollTrigger.create({
-    trigger,
-    start: 'top 60%',
-    onEnter:     () => gsap.to(pageBg, { backgroundColor: color, duration: 0.85, ease: 'power2.inOut' }),
-    onEnterBack: () => gsap.to(pageBg, { backgroundColor: color, duration: 0.85, ease: 'power2.inOut' }),
+/* ════════════════════════════════════════════════
+   7. REVEAL-LINE triggers — all sections
+════════════════════════════════════════════════ */
+document.querySelectorAll('.reveal-line .inner').forEach(el => {
+  if (el.closest('.hero-heading') || el.closest('.cta-heading')) return; // handled separately
+  gsap.from(el, {
+    y: '105%',
+    duration: 0.9,
+    ease: 'power4.out',
+    scrollTrigger: { trigger: el.closest('.reveal-line'), start: 'top 82%' },
   });
 });
 
-/* ─────────────────────────────────────────
-   12. POP ANIMATIONS — SERVICES
-───────────────────────────────────────── */
-gsap.from('.services-section .section-label', {
-  scrollTrigger: { trigger: '.services-section', start: 'top 75%' },
-  x: -32, opacity: 0, duration: 0.7, ease: 'back.out(2)'
+/* ════════════════════════════════════════════════
+   8. STATEMENT SECTION
+════════════════════════════════════════════════ */
+gsap.from('.statement-label', {
+  scrollTrigger: { trigger: '.statement', start: 'top 78%' },
+  x: -24, opacity: 0, duration: 0.7, ease: 'power3.out'
 });
-gsap.from('.services-title', {
-  scrollTrigger: { trigger: '.services-section', start: 'top 70%' },
-  scale: 0.82, opacity: 0, y: 20,
-  duration: 0.9, ease: 'back.out(1.8)'
+gsap.from('.statement-copy', {
+  scrollTrigger: { trigger: '.statement-body', start: 'top 82%' },
+  y: 30, opacity: 0, duration: 0.8, ease: 'power3.out'
 });
-gsap.from('.service-card', {
-  scrollTrigger: { trigger: '.services-grid', start: 'top 82%' },
-  scale: 0.86, opacity: 0,
-  rotation: i => (i % 2 === 0 ? -2 : 2),
-  duration: 0.75, ease: 'back.out(2.2)',
-  stagger: { amount: 0.28 }
+gsap.from('.stat-box', {
+  scrollTrigger: { trigger: '.statement-stats', start: 'top 82%' },
+  scale: 0.88, opacity: 0, y: 20,
+  duration: 0.65, ease: 'back.out(2)', stagger: 0.09
 });
 
-/* ─────────────────────────────────────────
-   13. POP ANIMATIONS — SKYE TV
-───────────────────────────────────────── */
-gsap.from('.t-skye', {
-  scrollTrigger: { trigger: '.skye-tv', start: 'top 78%' },
-  x: -90, opacity: 0, scale: 0.9, duration: 0.9, ease: 'back.out(1.6)'
+/* ════════════════════════════════════════════════
+   9. SERVICES SECTION
+════════════════════════════════════════════════ */
+gsap.from('.services .section-label', {
+  scrollTrigger: { trigger: '.services', start: 'top 78%' },
+  x: -24, opacity: 0, duration: 0.7, ease: 'power3.out'
 });
-gsap.from('.t-tv', {
-  scrollTrigger: { trigger: '.skye-tv', start: 'top 78%' },
-  x: 90, opacity: 0, scale: 0.9, duration: 0.9, ease: 'back.out(1.6)', delay: 0.08
+gsap.from('.section-sub', {
+  scrollTrigger: { trigger: '.services', start: 'top 75%' },
+  y: 20, opacity: 0, duration: 0.7, ease: 'power3.out', delay: 0.3
 });
-gsap.from('.tv-sub, .tv-header .btn-primary', {
+
+/* Card stack entrance */
+gsap.from('#card-stack', {
+  scrollTrigger: { trigger: '#card-stack', start: 'top 82%' },
+  x: -60, opacity: 0, duration: 1, ease: 'power4.out'
+});
+gsap.from('.stack-info', {
+  scrollTrigger: { trigger: '#card-stack', start: 'top 82%' },
+  x: 40, opacity: 0, duration: 1, ease: 'power4.out', delay: 0.15
+});
+
+/* ════════════════════════════════════════════════
+   10. CARD STACK — drag & click interaction
+════════════════════════════════════════════════ */
+(function() {
+  const container = document.getElementById('card-stack');
+  const cards = [...container.querySelectorAll('.stack-card')];
+  const counter = document.getElementById('stack-current');
+  const titleItems = [...document.querySelectorAll('.stack-title-item')];
+  let current = 0;
+  let isDragging = false;
+  let startX = 0;
+  let dragX = 0;
+
+  function pad(n) { return String(n + 1).padStart(2, '0'); }
+
+  function layout(animate) {
+    cards.forEach((card, i) => {
+      const pos = (i - current + cards.length) % cards.length;
+      const props = {
+        x: pos * 16,
+        y: pos * 12,
+        rotation: pos * 4,
+        scale: 1 - pos * 0.055,
+        zIndex: cards.length - pos,
+        opacity: pos === 0 ? 1 : pos === 1 ? 0.82 : pos === 2 ? 0.58 : 0.35,
+      };
+      if (animate) {
+        gsap.to(card, { ...props, duration: 0.55, ease: 'back.out(1.5)' });
+      } else {
+        gsap.set(card, props);
+      }
+    });
+    counter.textContent = pad(current);
+    titleItems.forEach((t, i) => t.classList.toggle('is-active', i === current));
+  }
+
+  function advance(dir) {
+    const top = cards[current];
+    const flyX = dir === 'next' ? -520 : 520;
+    gsap.to(top, { x: flyX, rotation: flyX > 0 ? -28 : 28, opacity: 0, duration: 0.42, ease: 'power2.in',
+      onComplete: () => {
+        gsap.set(top, { x: 0, y: 0, rotation: 0, opacity: 1 });
+        current = dir === 'next'
+          ? (current + 1) % cards.length
+          : (current - 1 + cards.length) % cards.length;
+        layout(true);
+      }
+    });
+  }
+
+  document.getElementById('stack-next').addEventListener('click', () => advance('next'));
+  document.getElementById('stack-prev').addEventListener('click', () => advance('prev'));
+
+  titleItems.forEach((item, i) => {
+    item.addEventListener('click', () => {
+      if (i === current) return;
+      const top = cards[current];
+      gsap.to(top, { x: -520, rotation: -28, opacity: 0, duration: 0.42, ease: 'power2.in',
+        onComplete: () => {
+          gsap.set(top, { x: 0, y: 0, rotation: 0, opacity: 1 });
+          current = i;
+          layout(true);
+        }
+      });
+    });
+  });
+
+  /* Drag */
+  container.addEventListener('pointerdown', e => {
+    if (e.target.tagName === 'A') return;
+    isDragging = true;
+    startX = e.clientX;
+    dragX = 0;
+    container.setPointerCapture(e.pointerId);
+  });
+  container.addEventListener('pointermove', e => {
+    if (!isDragging) return;
+    dragX = e.clientX - startX;
+    gsap.set(cards[current], { x: dragX, rotation: dragX * 0.07 });
+  });
+  container.addEventListener('pointerup', () => {
+    if (!isDragging) return;
+    isDragging = false;
+    if (Math.abs(dragX) > 90) {
+      advance(dragX < 0 ? 'next' : 'prev');
+    } else {
+      gsap.to(cards[current], { x: 0, rotation: 0, duration: 0.45, ease: 'back.out(1.7)' });
+    }
+    dragX = 0;
+  });
+
+  layout(false);
+})();
+
+/* ════════════════════════════════════════════════
+   11. SKYE TV
+════════════════════════════════════════════════ */
+gsap.from('.tv-heading .t-skye', {
+  scrollTrigger: { trigger: '.skye-tv', start: 'top 78%' },
+  x: -80, opacity: 0, duration: 0.9, ease: 'power4.out'
+});
+gsap.from('.tv-heading .t-tv', {
+  scrollTrigger: { trigger: '.skye-tv', start: 'top 78%' },
+  x: 80, opacity: 0, duration: 0.9, ease: 'power4.out', delay: 0.08
+});
+gsap.from('.tv-sub, .tv-header .btn', {
   scrollTrigger: { trigger: '.skye-tv', start: 'top 72%' },
-  y: 24, opacity: 0, duration: 0.7, ease: 'back.out(2)', stagger: 0.12, delay: 0.18
+  y: 20, opacity: 0, duration: 0.7, ease: 'power3.out', stagger: 0.1, delay: 0.2
 });
 gsap.from('.tv-tab', {
   scrollTrigger: { trigger: '.tv-tabs', start: 'top 88%' },
-  scale: 0.8, opacity: 0, y: 12,
-  duration: 0.5, ease: 'back.out(2.5)', stagger: 0.06
+  scale: 0.8, opacity: 0, duration: 0.45, ease: 'back.out(2.5)', stagger: 0.06
 });
-gsap.from('.vid-featured', {
-  scrollTrigger: { trigger: '.tv-featured', start: 'top 80%' },
-  scale: 0.92, opacity: 0, y: 30,
-  duration: 0.85, ease: 'back.out(1.7)'
+gsap.from('.vid-main', {
+  scrollTrigger: { trigger: '.tv-featured-grid', start: 'top 82%' },
+  scale: 0.94, opacity: 0, y: 24, duration: 0.85, ease: 'power4.out'
 });
 gsap.from('.vid-side', {
-  scrollTrigger: { trigger: '.tv-featured', start: 'top 80%' },
-  scale: 0.88, opacity: 0, x: 30,
-  duration: 0.65, ease: 'back.out(2)', stagger: 0.1, delay: 0.15
+  scrollTrigger: { trigger: '.tv-featured-grid', start: 'top 82%' },
+  scale: 0.9, opacity: 0, x: 28, duration: 0.6, ease: 'back.out(1.8)', stagger: 0.09, delay: 0.15
 });
-gsap.from('.vid-grid-card', {
+gsap.from('.vid-card', {
   scrollTrigger: { trigger: '.tv-grid', start: 'top 85%' },
-  scale: 0.82, opacity: 0, y: 24,
-  duration: 0.65, ease: 'back.out(2.2)', stagger: 0.09
+  scale: 0.84, opacity: 0, y: 20, duration: 0.6, ease: 'back.out(2)', stagger: 0.08
 });
 
-/* ─────────────────────────────────────────
-   14. POP ANIMATIONS — WHY SKYE
-───────────────────────────────────────── */
-gsap.from('.why-section .section-label', {
-  scrollTrigger: { trigger: '.why-section', start: 'top 78%' },
-  x: -32, opacity: 0, duration: 0.7, ease: 'back.out(2)'
-});
-gsap.from('.why-title', {
-  scrollTrigger: { trigger: '.why-section', start: 'top 72%' },
-  scale: 0.82, opacity: 0,
-  duration: 0.95, ease: 'back.out(1.8)'
-});
-gsap.from('.why-card', {
-  scrollTrigger: { trigger: '.why-grid', start: 'top 82%' },
-  scale: 0.84, opacity: 0, y: 40,
-  rotation: i => ([−3, 0, 3][i] ?? 0),
-  duration: 0.8, ease: 'elastic.out(1, 0.55)', stagger: 0.14
-});
-
-/* ─────────────────────────────────────────
-   15. POP ANIMATIONS — TESTIMONIALS
-───────────────────────────────────────── */
-gsap.from('.test-title', {
-  scrollTrigger: { trigger: '.testimonials', start: 'top 75%' },
-  scale: 0.8, opacity: 0,
-  duration: 1, ease: 'back.out(1.9)'
-});
-gsap.from('.test-card', {
-  scrollTrigger: { trigger: '.test-grid', start: 'top 85%' },
-  scale: 0.85, opacity: 0, y: 40,
-  rotation: i => ([-2, 0, 2][i] ?? 0),
-  duration: 0.8, ease: 'elastic.out(1, 0.5)',
-  stagger: { amount: 0.3 }
-});
-
-/* ─────────────────────────────────────────
-   16. POP ANIMATIONS — CTA
-───────────────────────────────────────── */
-gsap.from('.cta-eyebrow', {
-  scrollTrigger: { trigger: '.cta-section', start: 'top 80%' },
-  scale: 0.8, opacity: 0, duration: 0.7, ease: 'back.out(2)'
-});
-gsap.from('.cta-title', {
-  scrollTrigger: { trigger: '.cta-section', start: 'top 74%' },
-  scale: 0.78, opacity: 0,
-  duration: 1.1, ease: 'elastic.out(1, 0.5)', delay: 0.08
-});
-gsap.from('.cta-actions > *', {
-  scrollTrigger: { trigger: '.cta-section', start: 'top 70%' },
-  scale: 0.78, opacity: 0, y: 20,
-  duration: 0.7, ease: 'back.out(2.5)', stagger: 0.15, delay: 0.3
-});
-
-/* ─────────────────────────────────────────
-   17. POP ANIMATIONS — FOOTER
-───────────────────────────────────────── */
-gsap.from('.footer-top > div', {
-  scrollTrigger: { trigger: 'footer', start: 'top 88%' },
-  scale: 0.9, opacity: 0, y: 30,
-  duration: 0.7, ease: 'back.out(1.8)', stagger: 0.1
-});
-
-/* ─────────────────────────────────────────
-   18. TAB SWITCHING
-───────────────────────────────────────── */
+/* Tabs */
 document.querySelectorAll('.tv-tab').forEach(tab => {
   tab.addEventListener('click', () => {
     document.querySelectorAll('.tv-tab').forEach(t => t.classList.remove('active'));
     tab.classList.add('active');
   });
 });
-</script>
 
+/* ════════════════════════════════════════════════
+   12. WHY SKYE
+════════════════════════════════════════════════ */
+gsap.from('.why-card', {
+  scrollTrigger: { trigger: '.why-grid', start: 'top 82%' },
+  scale: 0.88, opacity: 0, y: 36,
+  rotation: i => [-2, 0, 2][i] ?? 0,
+  duration: 0.75, ease: 'back.out(1.9)', stagger: 0.14
+});
+
+/* ════════════════════════════════════════════════
+   13. TESTIMONIALS
+════════════════════════════════════════════════ */
+gsap.from('.test-card', {
+  scrollTrigger: { trigger: '.test-grid', start: 'top 85%' },
+  scale: 0.86, opacity: 0, y: 40,
+  rotation: i => [-2, 0, 2][i] ?? 0,
+  duration: 0.8, ease: 'elastic.out(1, 0.55)', stagger: 0.14
+});
+
+/* ════════════════════════════════════════════════
+   14. CTA REVEAL
+════════════════════════════════════════════════ */
+gsap.from('.cta-label', {
+  scrollTrigger: { trigger: '.cta-section', start: 'top 80%' },
+  y: 16, opacity: 0, duration: 0.7, ease: 'power3.out'
+});
+gsap.from('.cta-heading .inner', {
+  scrollTrigger: { trigger: '.cta-section', start: 'top 75%' },
+  y: '105%', duration: 1, ease: 'power4.out', stagger: 0.14
+});
+gsap.from('.cta-actions .btn', {
+  scrollTrigger: { trigger: '.cta-section', start: 'top 70%' },
+  scale: 0.85, opacity: 0, y: 18,
+  duration: 0.7, ease: 'back.out(2)', stagger: 0.12, delay: 0.3
+});
+
+/* ════════════════════════════════════════════════
+   15. FOOTER
+════════════════════════════════════════════════ */
+gsap.from('.footer-top > div', {
+  scrollTrigger: { trigger: 'footer', start: 'top 88%' },
+  y: 32, opacity: 0, duration: 0.7, ease: 'power3.out', stagger: 0.1
+});
+
+/* ════════════════════════════════════════════════
+   16. MAGNETIC BUTTONS
+════════════════════════════════════════════════ */
+document.querySelectorAll('.mag').forEach(btn => {
+  btn.addEventListener('mousemove', e => {
+    const r = btn.getBoundingClientRect();
+    const x = (e.clientX - (r.left + r.width  / 2)) * 0.36;
+    const y = (e.clientY - (r.top  + r.height / 2)) * 0.36;
+    gsap.to(btn, { x, y, duration: 0.35, ease: 'power2.out' });
+  });
+  btn.addEventListener('mouseleave', () => {
+    gsap.to(btn, { x: 0, y: 0, duration: 0.7, ease: 'elastic.out(1.1, 0.4)' });
+  });
+});
+</script>
 </body>
 </html>
