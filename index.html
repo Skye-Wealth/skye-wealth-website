@@ -674,6 +674,24 @@ footer { background: var(--charcoal); padding: 80px 48px 40px; }
 /* SCROLL REVEAL — visibility never blocked by CSS; GSAP handles entrances */
 .reveal { }
 
+/* PAGE BACKGROUND — fixed layer GSAP animates between section colours */
+#page-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: #F7F3EC;
+  will-change: background-color;
+}
+
+/* Strip solid backgrounds from sections so page-bg bleeds through */
+.hero            { background: transparent; }
+.services-section{ background: transparent; }
+.skye-tv         { background: transparent; }
+.why-section     { background: transparent; }
+.testimonials    { background: transparent; }
+.cta-section     { background: transparent; }
+footer           { background: transparent; }
+
 /* CANVAS AURORA */
 #hero-canvas {
   position: absolute;
@@ -713,6 +731,7 @@ footer { background: var(--charcoal); padding: 80px 48px 40px; }
 </head>
 <body>
 <div class="grain"></div>
+<div id="page-bg"></div>
 
 <!-- NAV -->
 <nav>
@@ -1191,107 +1210,154 @@ gsap.from('nav', {
 });
 
 /* ─────────────────────────────────────────
-   11. SCROLL ANIMATIONS — SERVICES
+   11. SECTION BACKGROUND COLOUR TRANSITIONS
+   As each section enters, the whole screen
+   smoothly transitions to that section's colour
+───────────────────────────────────────── */
+const pageBg = document.getElementById('page-bg');
+
+const sectionColours = [
+  { el: '.hero',             color: '#F7F3EC' },
+  { el: '.marquee-wrap',     color: '#F7F3EC' },
+  { el: '.services-section', color: '#f26861' },
+  { el: '.skye-tv',          color: '#434246' },
+  { el: '.why-section',      color: '#79c8bf' },
+  { el: '.testimonials',     color: '#fee290' },
+  { el: '.cta-section',      color: '#c39bbd' },
+  { el: 'footer',            color: '#434246' },
+];
+
+sectionColours.forEach(({ el, color }) => {
+  const trigger = document.querySelector(el);
+  if (!trigger) return;
+  ScrollTrigger.create({
+    trigger,
+    start: 'top 60%',
+    onEnter:     () => gsap.to(pageBg, { backgroundColor: color, duration: 0.85, ease: 'power2.inOut' }),
+    onEnterBack: () => gsap.to(pageBg, { backgroundColor: color, duration: 0.85, ease: 'power2.inOut' }),
+  });
+});
+
+/* ─────────────────────────────────────────
+   12. POP ANIMATIONS — SERVICES
 ───────────────────────────────────────── */
 gsap.from('.services-section .section-label', {
   scrollTrigger: { trigger: '.services-section', start: 'top 75%' },
-  x: -40, opacity: 0, duration: 0.8, ease: 'power3.out'
+  x: -32, opacity: 0, duration: 0.7, ease: 'back.out(2)'
 });
 gsap.from('.services-title', {
   scrollTrigger: { trigger: '.services-section', start: 'top 70%' },
-  y: 60, opacity: 0, duration: 1, ease: 'power4.out'
+  scale: 0.82, opacity: 0, y: 20,
+  duration: 0.9, ease: 'back.out(1.8)'
 });
 gsap.from('.service-card', {
-  scrollTrigger: { trigger: '.services-grid', start: 'top 80%' },
-  y: 70, opacity: 0, rotationX: 12, transformOrigin: 'top center',
-  duration: 0.8, ease: 'power3.out', stagger: 0.12
+  scrollTrigger: { trigger: '.services-grid', start: 'top 82%' },
+  scale: 0.86, opacity: 0,
+  rotation: i => (i % 2 === 0 ? -2 : 2),
+  duration: 0.75, ease: 'back.out(2.2)',
+  stagger: { amount: 0.28 }
 });
 
 /* ─────────────────────────────────────────
-   12. SCROLL ANIMATIONS — SKYE TV
+   13. POP ANIMATIONS — SKYE TV
 ───────────────────────────────────────── */
 gsap.from('.t-skye', {
-  scrollTrigger: { trigger: '.skye-tv', start: 'top 80%' },
-  x: -80, opacity: 0, duration: 1, ease: 'power4.out'
+  scrollTrigger: { trigger: '.skye-tv', start: 'top 78%' },
+  x: -90, opacity: 0, scale: 0.9, duration: 0.9, ease: 'back.out(1.6)'
 });
 gsap.from('.t-tv', {
-  scrollTrigger: { trigger: '.skye-tv', start: 'top 80%' },
-  x: 80, opacity: 0, duration: 1, ease: 'power4.out', delay: 0.1
+  scrollTrigger: { trigger: '.skye-tv', start: 'top 78%' },
+  x: 90, opacity: 0, scale: 0.9, duration: 0.9, ease: 'back.out(1.6)', delay: 0.08
 });
 gsap.from('.tv-sub, .tv-header .btn-primary', {
-  scrollTrigger: { trigger: '.skye-tv', start: 'top 75%' },
-  y: 30, opacity: 0, duration: 0.8, ease: 'power3.out', stagger: 0.1, delay: 0.2
+  scrollTrigger: { trigger: '.skye-tv', start: 'top 72%' },
+  y: 24, opacity: 0, duration: 0.7, ease: 'back.out(2)', stagger: 0.12, delay: 0.18
 });
 gsap.from('.tv-tab', {
-  scrollTrigger: { trigger: '.tv-tabs', start: 'top 85%' },
-  y: 20, opacity: 0, duration: 0.5, ease: 'power3.out', stagger: 0.07
+  scrollTrigger: { trigger: '.tv-tabs', start: 'top 88%' },
+  scale: 0.8, opacity: 0, y: 12,
+  duration: 0.5, ease: 'back.out(2.5)', stagger: 0.06
 });
 gsap.from('.vid-featured', {
   scrollTrigger: { trigger: '.tv-featured', start: 'top 80%' },
-  y: 60, opacity: 0, scale: 0.97, duration: 1, ease: 'power3.out'
+  scale: 0.92, opacity: 0, y: 30,
+  duration: 0.85, ease: 'back.out(1.7)'
 });
 gsap.from('.vid-side', {
   scrollTrigger: { trigger: '.tv-featured', start: 'top 80%' },
-  x: 40, opacity: 0, duration: 0.7, ease: 'power3.out', stagger: 0.1, delay: 0.2
+  scale: 0.88, opacity: 0, x: 30,
+  duration: 0.65, ease: 'back.out(2)', stagger: 0.1, delay: 0.15
 });
 gsap.from('.vid-grid-card', {
   scrollTrigger: { trigger: '.tv-grid', start: 'top 85%' },
-  y: 50, opacity: 0, scale: 0.95, duration: 0.7, ease: 'power3.out', stagger: 0.09
+  scale: 0.82, opacity: 0, y: 24,
+  duration: 0.65, ease: 'back.out(2.2)', stagger: 0.09
 });
 
 /* ─────────────────────────────────────────
-   13. SCROLL ANIMATIONS — WHY SKYE
+   14. POP ANIMATIONS — WHY SKYE
 ───────────────────────────────────────── */
+gsap.from('.why-section .section-label', {
+  scrollTrigger: { trigger: '.why-section', start: 'top 78%' },
+  x: -32, opacity: 0, duration: 0.7, ease: 'back.out(2)'
+});
 gsap.from('.why-title', {
-  scrollTrigger: { trigger: '.why-section', start: 'top 75%' },
-  y: 70, opacity: 0, duration: 1, ease: 'power4.out'
+  scrollTrigger: { trigger: '.why-section', start: 'top 72%' },
+  scale: 0.82, opacity: 0,
+  duration: 0.95, ease: 'back.out(1.8)'
 });
 gsap.from('.why-card', {
-  scrollTrigger: { trigger: '.why-grid', start: 'top 80%' },
-  y: 60, opacity: 0, rotationY: 8, transformOrigin: 'left center',
-  duration: 0.9, ease: 'power3.out', stagger: 0.15
+  scrollTrigger: { trigger: '.why-grid', start: 'top 82%' },
+  scale: 0.84, opacity: 0, y: 40,
+  rotation: i => ([−3, 0, 3][i] ?? 0),
+  duration: 0.8, ease: 'elastic.out(1, 0.55)', stagger: 0.14
 });
 
 /* ─────────────────────────────────────────
-   14. SCROLL ANIMATIONS — TESTIMONIALS
+   15. POP ANIMATIONS — TESTIMONIALS
 ───────────────────────────────────────── */
 gsap.from('.test-title', {
   scrollTrigger: { trigger: '.testimonials', start: 'top 75%' },
-  scale: 1.15, opacity: 0, duration: 1.1, ease: 'power4.out'
+  scale: 0.8, opacity: 0,
+  duration: 1, ease: 'back.out(1.9)'
 });
 gsap.from('.test-card', {
   scrollTrigger: { trigger: '.test-grid', start: 'top 85%' },
-  y: 70, opacity: 0, duration: 0.9, ease: 'power3.out',
-  stagger: { amount: 0.35, from: 'start' }
+  scale: 0.85, opacity: 0, y: 40,
+  rotation: i => ([-2, 0, 2][i] ?? 0),
+  duration: 0.8, ease: 'elastic.out(1, 0.5)',
+  stagger: { amount: 0.3 }
 });
 
 /* ─────────────────────────────────────────
-   15. SCROLL ANIMATIONS — CTA
+   16. POP ANIMATIONS — CTA
 ───────────────────────────────────────── */
 gsap.from('.cta-eyebrow', {
   scrollTrigger: { trigger: '.cta-section', start: 'top 80%' },
-  y: 20, opacity: 0, duration: 0.7, ease: 'power3.out'
+  scale: 0.8, opacity: 0, duration: 0.7, ease: 'back.out(2)'
 });
 gsap.from('.cta-title', {
-  scrollTrigger: { trigger: '.cta-section', start: 'top 75%' },
-  scale: 1.18, opacity: 0, y: 30, duration: 1.2, ease: 'power4.out', delay: 0.1
+  scrollTrigger: { trigger: '.cta-section', start: 'top 74%' },
+  scale: 0.78, opacity: 0,
+  duration: 1.1, ease: 'elastic.out(1, 0.5)', delay: 0.08
 });
 gsap.from('.cta-actions > *', {
   scrollTrigger: { trigger: '.cta-section', start: 'top 70%' },
-  y: 30, opacity: 0, scale: 0.92,
-  duration: 0.7, ease: 'back.out(1.5)', stagger: 0.14, delay: 0.35
+  scale: 0.78, opacity: 0, y: 20,
+  duration: 0.7, ease: 'back.out(2.5)', stagger: 0.15, delay: 0.3
 });
 
 /* ─────────────────────────────────────────
-   16. SCROLL ANIMATIONS — FOOTER
+   17. POP ANIMATIONS — FOOTER
 ───────────────────────────────────────── */
 gsap.from('.footer-top > div', {
-  scrollTrigger: { trigger: 'footer', start: 'top 85%' },
-  y: 40, opacity: 0, duration: 0.8, ease: 'power3.out', stagger: 0.1
+  scrollTrigger: { trigger: 'footer', start: 'top 88%' },
+  scale: 0.9, opacity: 0, y: 30,
+  duration: 0.7, ease: 'back.out(1.8)', stagger: 0.1
 });
 
 /* ─────────────────────────────────────────
-   17. TAB SWITCHING
+   18. TAB SWITCHING
 ───────────────────────────────────────── */
 document.querySelectorAll('.tv-tab').forEach(tab => {
   tab.addEventListener('click', () => {
