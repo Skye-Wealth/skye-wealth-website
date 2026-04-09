@@ -179,12 +179,10 @@ a { text-decoration: none; color: inherit; }
   color: rgba(255,255,255,0.55);
 }
 
-/* "Simplified." — starts invisible (matches hero coral bg), blooms to yellow */
+/* "Simplified." — starts invisible (matches hero coral bg), fades to yellow */
 .hero-word-reveal {
   color: var(--coral);
-  filter: blur(20px);
-  display: inline-block; /* required for filter on inline */
-  will-change: filter, color;
+  display: inline-block;
 }
 
 .hero-bottom {
@@ -1540,11 +1538,9 @@ heroTL
     ease: 'power4.out',
     stagger: 0.14,
   }, '-=0.4')
-  /* "Simplified." blooms from coral-hidden → yellow with blur dissolve + glow */
+  /* "Simplified." fades from coral-hidden → yellow */
   .to('.hero-word-reveal', {
     color: '#fee290',
-    filter: 'blur(0px)',
-    textShadow: '0 0 48px rgba(254,226,144,0.55), 0 0 120px rgba(254,226,144,0.25)',
     duration: 2.6,
     ease: 'power2.inOut',
   }, '-=0.15')
