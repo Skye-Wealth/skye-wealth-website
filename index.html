@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Skye Wealth — Life Insurance, Simplified</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Serif+Display:ital@1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Corben:wght@700&family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -118,25 +118,24 @@ nav {
   flex-shrink: 0;
 }
 .hero-title {
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  font-size: clamp(68px, 10.5vw, 144px);
-  line-height: 0.93;
-  letter-spacing: -4px;
+  font-family: 'Corben', cursive;
+  font-weight: 700;
+  font-size: clamp(62px, 9.5vw, 132px);
+  line-height: 0.95;
+  letter-spacing: -2px;
   text-transform: uppercase;
   color: var(--charcoal);
   margin-bottom: 44px;
   max-width: 1100px;
 }
-.title-line { display: block; overflow: hidden; line-height: 1; padding-bottom: 0.07em; }
+.title-line { display: block; overflow: hidden; line-height: 1.02; padding-bottom: 0.05em; }
 .title-line--serif {
-  font-family: 'DM Serif Display', serif;
-  font-style: italic;
-  font-weight: 400;
+  font-family: 'Corben', cursive;
+  font-weight: 700;
+  font-style: normal;
   text-transform: none;
-  letter-spacing: -3px;
+  letter-spacing: -2px;
   color: var(--coral);
-  font-size: clamp(72px, 11vw, 150px);
 }
 .char { display: inline-block; will-change: transform; }
 .hero-bottom {
@@ -245,11 +244,10 @@ nav {
 
 /* MARQUEE */
 .marquee-wrap {
+  background: var(--cream);
+  padding: 28px 48px;
   position: relative;
   z-index: 10;
-  padding: 0 48px;
-  margin-top: -26px;
-  margin-bottom: -26px;
 }
 .marquee-strip {
   background: rgba(255, 255, 255, 0.55);
@@ -746,7 +744,7 @@ footer { background: var(--charcoal); padding: 80px 48px 40px; }
   <h1 class="hero-title">
     <div class="title-line">LIFE</div>
     <div class="title-line">INSURANCE</div>
-    <div class="title-line title-line--serif">Simplified.</div>
+    <div class="title-line title-line--serif">SIMPLIFIED.</div>
   </h1>
   <div class="hero-bottom">
     <p class="hero-sub">Protect the way you live now from the unexpected. Expert advice, zero jargon, always on your side.</p>
