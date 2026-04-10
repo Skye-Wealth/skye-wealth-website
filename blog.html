@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog — Skye Wealth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Corben:wght@400;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<style>
+  .blog-hero{
+    padding:160px 48px 80px;
+    background:var(--cream);
+    color:var(--black);
+  }
+  .blog-hero h1{
+    font-family:'Corben',serif;font-weight:400;
+    font-size:clamp(56px,8vw,120px);line-height:1.0;letter-spacing:-0.02em;
+    color:var(--black);margin-bottom:20px;
+  }
+  .blog-hero p{font-size:18px;color:#666;max-width:480px;line-height:1.6}
+
+  .blog-filters{
+    display:flex;gap:8px;flex-wrap:wrap;
+    padding:32px 48px;background:var(--cream);
+    border-bottom:1px solid rgba(0,0,0,.07);
+  }
+  .filter-btn{
+    padding:8px 20px;border-radius:100px;font-size:13px;font-weight:600;
+    border:1.5px solid rgba(0,0,0,.15);background:transparent;
+    color:#666;cursor:pointer;transition:all .2s;
+    font-family:'Plus Jakarta Sans',sans-serif;
+  }
+  .filter-btn:hover{border-color:var(--coral);color:var(--coral)}
+  .filter-btn.active{background:var(--coral);border-color:var(--coral);color:#fff}
+
+  .blog-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);
+    gap:32px;padding:64px 48px 120px;
+    background:var(--cream);
+  }
+  .post-card{
+    background:#fff;border-radius:20px;overflow:hidden;
+    text-decoration:none;display:block;color:var(--black);
+    transition:transform .3s var(--expo),box-shadow .3s var(--expo);
+  }
+  .post-card:hover{transform:translateY(-6px);box-shadow:0 24px 64px rgba(0,0,0,.1)}
+  .post-card-img{
+    height:220px;background:var(--cream);
+    position:relative;overflow:hidden;
+  }
+  .post-card-img img{width:100%;height:100%;object-fit:cover}
+  .post-card-img-placeholder{
+    width:100%;height:100%;
+    background:linear-gradient(135deg,var(--coral),#e05550);
+    display:flex;align-items:center;justify-content:center;
+    font-size:48px;
+  }
+  .post-card-body{padding:28px 28px 32px}
+  .post-card-cats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  .post-card-cat{
+    font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+    color:var(--coral);
+  }
+  .post-card-title{
+    font-family:'Corben',serif;font-weight:400;
+    font-size:22px;line-height:1.2;letter-spacing:-0.02em;
+    color:var(--black);margin-bottom:12px;
+  }
+  .post-card-excerpt{font-size:14px;line-height:1.65;color:#777;margin-bottom:20px}
+  .post-card-meta{
+    display:flex;align-items:center;gap:10px;
+    font-size:12px;color:#aaa;
+  }
+  .post-card-meta-dot{width:3px;height:3px;border-radius:50%;background:#ccc}
+
+  .blog-empty{
+    grid-column:1/-1;text-align:center;
+    padding:80px 0;color:#aaa;font-size:16px;
+  }
+  .blog-loading{
+    grid-column:1/-1;
+    display:flex;justify-content:center;align-items:center;
+    padding:80px 0;gap:8px;
+  }
+  .loading-dot{
+    width:10px;height:10px;border-radius:50%;background:var(--coral);
+    animation:loadpulse 1.2s ease-in-out infinite;
+  }
+  .loading-dot:nth-child(2){animation-delay:.2s}
+  .loading-dot:nth-child(3){animation-delay:.4s}
+  @keyframes loadpulse{0%,100%{opacity:.2;transform:scale(.7)}50%{opacity:1;transform:scale(1)}}
+
+  @media(max-width:900px){
+    .blog-hero,.blog-filters,.blog-grid{padding-left:24px;padding-right:24px}
+    .blog-grid{grid-template-columns:1fr}
+  }
+  @media(min-width:901px) and (max-width:1100px){
+    .blog-grid{grid-template-columns:repeat(2,1fr)}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav is-glass" id="nav">
+  <a href="/" class="nav-logo"><img src="logo-text.svg" alt="Skye Wealth"></a>
+  <ul class="nav-links">
+    <li><a href="https://www.skye.com.au/life-insurance-advice">Life Insurance</a></li>
+    <li><a href="https://www.skye.com.au/insurance-review">Insurance Review</a></li>
+    <li><a href="https://www.skye.com.au/claims">Claims</a></li>
+    <li><a href="#skye-tv">Skye TV</a></li>
+    <li><a href="https://www.skye.com.au/about-skye-wealth">About</a></li>
+  </ul>
+  <a href="https://www.skye.com.au/phone-call" class="nav-cta">Book a Call</a>
+</nav>
+
+<!-- HERO -->
+<div class="blog-hero">
+  <div class="label">Insights</div>
+  <h1>The Skye <em>Blog.</em></h1>
+  <p>Plain-English guides, industry updates, and real claims stories — so you can make better decisions about your cover.</p>
+</div>
+
+<!-- FILTERS -->
+<div class="blog-filters" id="filters">
+  <button class="filter-btn active" data-cat="all">All</button>
+</div>
+
+<!-- GRID -->
+<div class="blog-grid" id="blog-grid">
+  <div class="blog-loading">
+    <div class="loading-dot"></div>
+    <div class="loading-dot"></div>
+    <div class="loading-dot"></div>
+  </div>
+</div>
+
+<script>
+const PROJECT = 'f0yrya1r';
+const DATASET = 'production';
+const API     = `https://${PROJECT}.api.sanity.io/v2024-01-01/data/query/${DATASET}`;
+
+function sanityImg(ref, w = 800) {
+  if (!ref) return null;
+  const [, id, dims, fmt] = ref.split('-');
+  return `https://cdn.sanity.io/images/${PROJECT}/${DATASET}/${id}-${dims}.${fmt}?w=${w}&auto=format&fit=crop`;
+}
+
+function formatDate(iso) {
+  return new Date(iso).toLocaleDateString('en-AU', { day:'numeric', month:'long', year:'numeric' });
+}
+
+async function fetchPosts(cat = 'all') {
+  const filter = cat === 'all'
+    ? `*[_type == "post" && defined(slug.current)]`
+    : `*[_type == "post" && defined(slug.current) && $cat in categories[]->title]`;
+  const proj = `{ _id, title, slug, publishedAt, excerpt, mainImage, "author": author->name, "categories": categories[]->title }`;
+  const query = encodeURIComponent(`${filter} | order(publishedAt desc) ${proj}`);
+  const params = cat !== 'all' ? `&%24cat=%22${encodeURIComponent(cat)}%22` : '';
+  const res = await fetch(`${API}?query=${query}${params}`);
+  const data = await res.json();
+  return data.result || [];
+}
+
+async function fetchCategories() {
+  const query = encodeURIComponent(`*[_type == "category"] | order(title asc) { title }`);
+  const res = await fetch(`${API}?query=${query}`);
+  const data = await res.json();
+  return (data.result || []).map(c => c.title);
+}
+
+function renderCard(post) {
+  const img = post.mainImage?.asset?._ref
+    ? `<img src="${sanityImg(post.mainImage.asset._ref, 600)}" alt="${post.mainImage.alt || post.title}">`
+    : `<div class="post-card-img-placeholder">📝</div>`;
+  const cats = (post.categories || []).map(c => `<span class="post-card-cat">${c}</span>`).join('');
+  return `
+    <a href="post.html?slug=${post.slug.current}" class="post-card">
+      <div class="post-card-img">${img}</div>
+      <div class="post-card-body">
+        ${cats ? `<div class="post-card-cats">${cats}</div>` : ''}
+        <div class="post-card-title">${post.title}</div>
+        <div class="post-card-excerpt">${post.excerpt || ''}</div>
+        <div class="post-card-meta">
+          <span>${post.author || 'Skye Wealth'}</span>
+          ${post.publishedAt ? `<span class="post-card-meta-dot"></span><span>${formatDate(post.publishedAt)}</span>` : ''}
+        </div>
+      </div>
+    </a>`;
+}
+
+async function init() {
+  const grid    = document.getElementById('blog-grid');
+  const filters = document.getElementById('filters');
+
+  // Load categories and populate filter bar
+  const cats = await fetchCategories();
+  cats.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn';
+    btn.dataset.cat = cat;
+    btn.textContent = cat;
+    filters.appendChild(btn);
+  });
+
+  // Load and render posts
+  async function load(cat = 'all') {
+    grid.innerHTML = `<div class="blog-loading"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>`;
+    const posts = await fetchPosts(cat);
+    grid.innerHTML = posts.length
+      ? posts.map(renderCard).join('')
+      : `<div class="blog-empty">No posts yet — check back soon.</div>`;
+  }
+
+  // Filter clicks
+  filters.addEventListener('click', e => {
+    const btn = e.target.closest('.filter-btn');
+    if (!btn) return;
+    filters.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    load(btn.dataset.cat);
+  });
+
+  load();
+}
+
+init();
+</script>
+</body>
+</html>

@@ -3,14 +3,14 @@
   "configurations": [
     {
       "name": "Python HTTP Server",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "3000"],
-      "port": 3000
+      "runtimeExecutable": "/usr/bin/python3",
+      "runtimeArgs": ["-m", "http.server", "3002"],
+      "port": 3002
     },
     {
       "name": "npx serve",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["serve", "-l", "3001", "."],
+      "runtimeArgs": ["--yes", "serve", "-l", "3001", "."],
       "port": 3001
     }
   ]

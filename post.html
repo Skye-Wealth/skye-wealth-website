@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loading… — Skye Wealth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Corben:wght@400;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<style>
+  .post-hero{
+    padding:140px 48px 64px;
+    background:var(--cream);
+    color:var(--black);
+    max-width:800px;
+    margin:0 auto;
+  }
+  .post-cats{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+  .post-cat{
+    font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;
+    color:var(--coral);
+  }
+  .post-title{
+    font-family:'Corben',serif;font-weight:400;
+    font-size:clamp(36px,6vw,72px);line-height:1.05;letter-spacing:-0.02em;
+    color:var(--black);margin-bottom:24px;
+  }
+  .post-meta{
+    display:flex;align-items:center;gap:16px;
+    font-size:14px;color:#999;padding-bottom:32px;
+    border-bottom:1px solid rgba(0,0,0,.08);
+  }
+  .post-author-img{
+    width:40px;height:40px;border-radius:50%;object-fit:cover;
+    background:var(--coral);display:flex;align-items:center;justify-content:center;
+    color:#fff;font-weight:700;font-size:16px;flex-shrink:0;
+  }
+  .post-author-name{font-weight:600;color:var(--black)}
+
+  .post-cover{
+    width:100%;max-width:900px;margin:0 auto 0;
+    display:block;
+  }
+  .post-cover img{
+    width:100%;height:clamp(280px,40vw,520px);
+    object-fit:cover;
+  }
+
+  .post-body{
+    max-width:720px;margin:0 auto;
+    padding:64px 48px 120px;
+    color:var(--black);
+    font-size:18px;line-height:1.8;
+  }
+  .post-body h2{
+    font-family:'Corben',serif;font-weight:400;
+    font-size:clamp(28px,4vw,42px);line-height:1.1;letter-spacing:-0.02em;
+    margin:56px 0 20px;color:var(--black);
+  }
+  .post-body h3{
+    font-family:'Corben',serif;font-weight:400;
+    font-size:clamp(22px,3vw,30px);line-height:1.15;letter-spacing:-0.01em;
+    margin:40px 0 16px;color:var(--black);
+  }
+  .post-body h4{
+    font-size:18px;font-weight:700;margin:32px 0 12px;color:var(--black);
+  }
+  .post-body p{margin-bottom:24px;color:#333}
+  .post-body strong{font-weight:700;color:var(--black)}
+  .post-body em{font-style:italic}
+  .post-body code{
+    font-family:monospace;font-size:15px;
+    background:var(--cream);padding:2px 7px;border-radius:4px;
+  }
+  .post-body a{color:var(--coral);text-decoration:underline;text-decoration-color:rgba(242,104,97,.35)}
+  .post-body a:hover{text-decoration-color:var(--coral)}
+  .post-body blockquote{
+    border-left:3px solid var(--coral);
+    margin:40px 0;padding:16px 28px;
+    background:var(--cream);border-radius:0 12px 12px 0;
+    font-size:20px;font-style:italic;color:#555;line-height:1.65;
+  }
+  .post-body figure{margin:40px 0}
+  .post-body figure img{
+    width:100%;border-radius:16px;
+    box-shadow:0 12px 40px rgba(0,0,0,.1);
+  }
+  .post-body figcaption{
+    text-align:center;font-size:13px;color:#aaa;margin-top:12px;
+  }
+
+  /* CTA block at end of post */
+  .post-cta{
+    max-width:720px;margin:0 auto;
+    padding:0 48px 120px;
+  }
+  .post-cta-inner{
+    background:var(--black);border-radius:24px;
+    padding:52px 48px;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:40px;
+  }
+  .post-cta-heading{
+    font-family:'Corben',serif;font-weight:400;
+    font-size:clamp(24px,3vw,36px);line-height:1.1;letter-spacing:-0.02em;
+    color:#fff;margin-bottom:10px;
+  }
+  .post-cta-sub{font-size:15px;color:rgba(255,255,255,.45);line-height:1.5}
+  .post-cta-btns{display:flex;gap:12px;flex-wrap:wrap;flex-shrink:0}
+
+  /* Back link */
+  .post-back{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:140px 48px 0;max-width:800px;margin:0 auto;
+    font-size:14px;font-weight:600;color:#aaa;
+    text-decoration:none;transition:color .2s;
+    display:block;
+  }
+  .post-back:hover{color:var(--coral)}
+
+  .post-loading{
+    display:flex;justify-content:center;align-items:center;
+    min-height:60vh;gap:8px;
+  }
+  .loading-dot{
+    width:10px;height:10px;border-radius:50%;background:var(--coral);
+    animation:loadpulse 1.2s ease-in-out infinite;
+  }
+  .loading-dot:nth-child(2){animation-delay:.2s}
+  .loading-dot:nth-child(3){animation-delay:.4s}
+  @keyframes loadpulse{0%,100%{opacity:.2;transform:scale(.7)}50%{opacity:1;transform:scale(1)}}
+
+  @media(max-width:900px){
+    .post-hero,.post-body,.post-cta,.post-back{padding-left:24px;padding-right:24px}
+    .post-cta-inner{flex-direction:column;align-items:flex-start}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav is-glass" id="nav">
+  <a href="/" class="nav-logo"><img src="logo-text.svg" alt="Skye Wealth"></a>
+  <ul class="nav-links">
+    <li><a href="https://www.skye.com.au/life-insurance-advice">Life Insurance</a></li>
+    <li><a href="https://www.skye.com.au/insurance-review">Insurance Review</a></li>
+    <li><a href="https://www.skye.com.au/claims">Claims</a></li>
+    <li><a href="index.html#skye-tv">Skye TV</a></li>
+    <li><a href="https://www.skye.com.au/about-skye-wealth">About</a></li>
+  </ul>
+  <a href="https://www.skye.com.au/phone-call" class="nav-cta">Book a Call</a>
+</nav>
+
+<div id="post-root">
+  <div class="post-loading">
+    <div class="loading-dot"></div>
+    <div class="loading-dot"></div>
+    <div class="loading-dot"></div>
+  </div>
+</div>
+
+<script>
+const PROJECT = 'f0yrya1r';
+const DATASET = 'production';
+const API     = `https://${PROJECT}.api.sanity.io/v2024-01-01/data/query/${DATASET}`;
+
+function sanityImg(ref, w = 1200) {
+  if (!ref) return null;
+  const [, id, dims, fmt] = ref.split('-');
+  return `https://cdn.sanity.io/images/${PROJECT}/${DATASET}/${id}-${dims}.${fmt}?w=${w}&auto=format&fit=crop`;
+}
+
+function formatDate(iso) {
+  return new Date(iso).toLocaleDateString('en-AU', { day:'numeric', month:'long', year:'numeric' });
+}
+
+// Portable text → HTML renderer
+function renderBody(blocks) {
+  if (!blocks) return '';
+  return blocks.map(block => {
+    if (block._type === 'image') {
+      const src = sanityImg(block.asset._ref, 1200);
+      return `<figure><img src="${src}" alt="${block.alt || ''}"><figcaption>${block.caption || ''}</figcaption></figure>`;
+    }
+    if (block._type !== 'block') return '';
+
+    const text = block.children.map(span => {
+      let t = span.text
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      if (!span.marks?.length) return t;
+      span.marks.forEach(mark => {
+        if (mark === 'strong') t = `<strong>${t}</strong>`;
+        else if (mark === 'em') t = `<em>${t}</em>`;
+        else if (mark === 'code') t = `<code>${t}</code>`;
+        else {
+          // annotation (link)
+          const def = block.markDefs?.find(d => d._key === mark);
+          if (def?._type === 'link') {
+            const target = def.blank ? ' target="_blank" rel="noopener"' : '';
+            t = `<a href="${def.href}"${target}>${t}</a>`;
+          }
+        }
+      });
+      return t;
+    }).join('');
+
+    const tags = {
+      h2: `<h2>${text}</h2>`,
+      h3: `<h3>${text}</h3>`,
+      h4: `<h4>${text}</h4>`,
+      blockquote: `<blockquote>${text}</blockquote>`,
+      normal: `<p>${text}</p>`,
+    };
+    return tags[block.style] || `<p>${text}</p>`;
+  }).join('');
+}
+
+async function init() {
+  const slug = new URLSearchParams(location.search).get('slug');
+  if (!slug) { location.href = 'blog.html'; return; }
+
+  const query = encodeURIComponent(
+    `*[_type == "post" && slug.current == $slug][0]{
+      title, slug, publishedAt, excerpt, mainImage, body,
+      "author": author->{name, role, image},
+      "categories": categories[]->title
+    }`
+  );
+  const res  = await fetch(`${API}?query=${query}&%24slug=%22${encodeURIComponent(slug)}%22`);
+  const data = await res.json();
+  const post = data.result;
+
+  if (!post) {
+    document.getElementById('post-root').innerHTML =
+      `<div style="padding:200px 48px;text-align:center;color:#aaa;font-size:18px">Post not found. <a href="blog.html" style="color:var(--coral)">Back to blog →</a></div>`;
+    return;
+  }
+
+  document.title = `${post.title} — Skye Wealth`;
+
+  const authorInitial = (post.author?.name || 'S')[0].toUpperCase();
+  const authorImg = post.author?.image?.asset?._ref
+    ? `<img src="${sanityImg(post.author.image.asset._ref, 80)}" class="post-author-img" alt="${post.author.name}">`
+    : `<div class="post-author-img">${authorInitial}</div>`;
+
+  const coverImg = post.mainImage?.asset?._ref
+    ? `<div class="post-cover"><img src="${sanityImg(post.mainImage.asset._ref, 1400)}" alt="${post.mainImage.alt || post.title}"></div>`
+    : '';
+
+  const cats = (post.categories || []).map(c => `<span class="post-cat">${c}</span>`).join('');
+
+  document.getElementById('post-root').innerHTML = `
+    <a href="blog.html" class="post-back">← Back to blog</a>
+
+    <div class="post-hero">
+      ${cats ? `<div class="post-cats">${cats}</div>` : ''}
+      <h1 class="post-title">${post.title}</h1>
+      <div class="post-meta">
+        ${authorImg}
+        <div>
+          <div class="post-author-name">${post.author?.name || 'Skye Wealth'}</div>
+          <div>${post.author?.role || 'Skye Wealth'}${post.publishedAt ? ` · ${formatDate(post.publishedAt)}` : ''}</div>
+        </div>
+      </div>
+    </div>
+
+    ${coverImg}
+
+    <div class="post-body">${renderBody(post.body)}</div>
+
+    <div class="post-cta">
+      <div class="post-cta-inner">
+        <div>
+          <div class="post-cta-heading">Ready to get your cover sorted?</div>
+          <div class="post-cta-sub">A free 15-minute call. No pressure, no jargon — just clarity.</div>
+        </div>
+        <div class="post-cta-btns">
+          <a href="https://www.skye.com.au/phone-call" class="btn btn--coral">Book a free call</a>
+          <a href="https://www.skye.com.au/life-insurance-advice" class="btn btn--outline-dark" style="color:#fff;border-color:rgba(255,255,255,.25)">Learn more →</a>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+init();
+</script>
+</body>
+</html>
