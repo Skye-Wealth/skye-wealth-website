@@ -202,7 +202,6 @@ document.querySelectorAll('.mag').forEach(btn => {
     document.getElementById('panel-tag').textContent   = d.tag;
     document.getElementById('panel-title').textContent = d.title;
     document.getElementById('panel-lead').textContent  = d.lead;
-    document.getElementById('panel-cta-heading').textContent = d.cta;
     document.getElementById('panel-points').innerHTML  = d.points.map(p => `<li>${p}</li>`).join('');
   }
 
