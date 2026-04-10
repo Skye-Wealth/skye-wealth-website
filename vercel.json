@@ -34,6 +34,12 @@
       ]
     }
   ],
+  "rewrites": [
+    {
+      "source": "/api/sanity/:path*",
+      "destination": "https://f0yrya1r.api.sanity.io/:path*"
+    }
+  ],
   "redirects": [
     {
       "source": "/(.*)",
