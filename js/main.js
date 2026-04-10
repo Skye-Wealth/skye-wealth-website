@@ -14,6 +14,21 @@ ScrollTrigger.create({
   onLeaveBack: () => nav.classList.remove('is-glass'),
 });
 
+/* ── NAV DARK-BG SECTIONS ────────────────────────── */
+['#skye-tv', 'footer'].forEach(sel => {
+  const el = document.querySelector(sel);
+  if (!el) return;
+  ScrollTrigger.create({
+    trigger: el,
+    start: 'top 72px',
+    end:   'bottom 72px',
+    onEnter:     () => nav.classList.add('nav--on-dark'),
+    onLeave:     () => nav.classList.remove('nav--on-dark'),
+    onEnterBack: () => nav.classList.add('nav--on-dark'),
+    onLeaveBack: () => nav.classList.remove('nav--on-dark'),
+  });
+});
+
 /* ── AURORA FACTORY ──────────────────────────────── */
 function makeAurora(id, orbs) {
   const canvas = document.getElementById(id);

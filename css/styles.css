@@ -62,6 +62,17 @@ body{
 .nav-logo img{height:26px;filter:brightness(0) invert(1);transition:filter .45s var(--smooth)}
 .nav.is-glass .nav-logo img{filter:none}
 
+/* Dark-background override — Skye TV, footer etc */
+.nav.is-glass.nav--on-dark{
+  background:rgba(20,20,20,.55);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 8px 32px rgba(0,0,0,.3);
+}
+.nav.is-glass.nav--on-dark .nav-logo img{filter:brightness(0) invert(1)}
+.nav.is-glass.nav--on-dark .nav-links a{color:rgba(255,255,255,.65)}
+.nav.is-glass.nav--on-dark .nav-links a:hover{color:#fff;background:rgba(255,255,255,.1)}
+.nav.is-glass.nav--on-dark .nav-cta{background:#fff;border-color:#fff;color:var(--black);box-shadow:0 4px 16px rgba(0,0,0,.2)}
+.nav.is-glass.nav--on-dark .nav-cta:hover{background:rgba(255,255,255,.88)}
+
 .nav-links{display:flex;align-items:center;gap:4px;list-style:none}
 .nav-links a{font-size:14px;font-weight:500;padding:8px 16px;border-radius:100px;color:rgba(255,255,255,.8);transition:color .25s,background .25s}
 .nav-links a:hover{color:#fff;background:rgba(255,255,255,.1)}
