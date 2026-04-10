@@ -140,40 +140,6 @@ gsap.from('.stat-box', {
   scale: .88, opacity: 0, y: 20, duration: .65, ease: 'back.out(2)', stagger: .09,
 });
 
-/* ── SKYE TV ENTRANCE ────────────────────────────── */
-(function () {
-  // Wrap each heading word in a clip container so text rises from nothing
-  document.querySelectorAll('.tv-heading .t-skye, .tv-heading .t-tv').forEach(el => {
-    el.style.display = 'block';
-    el.style.overflow = 'hidden';
-    el.innerHTML = `<span class="tv-word-inner" style="display:block">${el.innerHTML}</span>`;
-  });
-
-  const tl = gsap.timeline({
-    scrollTrigger: { trigger: '.skye-tv', start: 'top 82%', once: true },
-  });
-
-  tl.from('.tv-heading .t-skye .tv-word-inner', {
-    yPercent: 110, duration: .9, ease: 'power4.out',
-  })
-  .from('.tv-heading .t-tv .tv-word-inner', {
-    yPercent: 110, duration: .95, ease: 'power4.out',
-  }, '-=.65')
-  .from('.tv-sub', {
-    y: 20, opacity: 0, duration: .7, ease: 'power2.out',
-  }, '-=.5')
-  .from('.tv-header .btn', {
-    y: 16, opacity: 0, duration: .6, ease: 'power2.out',
-  }, '-=.5')
-  .from('.tv-tabs .tv-tab', {
-    y: 16, opacity: 0, duration: .5, ease: 'power2.out', stagger: .05,
-  }, '-=.4')
-  .from('.skye-tv .pop', {
-    y: 32, opacity: 0, scale: .97, duration: .65, ease: 'power2.out', stagger: .07,
-    transformOrigin: 'center bottom',
-  }, '-=.25');
-})();
-
 /* ── SKYE TV TABS ────────────────────────────────── */
 document.querySelectorAll('.tv-tab').forEach(tab => {
   tab.addEventListener('click', () => {
