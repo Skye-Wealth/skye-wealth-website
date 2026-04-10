@@ -439,16 +439,24 @@ a { text-decoration: none; color: inherit; }
   text-align: right;
 }
 
-/* Card stack layout */
+/* ── SERVICES (CARD STACK) ──────────────────────── */
+/* Centred layout — stack on left, nav below */
 .stack-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 40px;
+}
+.stack-stage {
+  display: flex;
   align-items: center;
+  gap: 48px;
 }
 .stack-container {
   position: relative;
-  height: 520px;
+  height: 540px;
+  width: 420px;
+  flex-shrink: 0;
   cursor: grab;
   user-select: none;
 }
@@ -456,92 +464,82 @@ a { text-decoration: none; color: inherit; }
 
 .stack-card {
   position: absolute;
-  width: 340px;
-  height: 480px;
-  border-radius: 24px;
-  padding: 40px 36px;
+  width: 420px;
+  height: 500px;
+  border-radius: 28px;
+  padding: 44px 40px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   will-change: transform;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+  box-shadow: 0 24px 72px rgba(0,0,0,0.14);
   overflow: hidden;
+  color: white;
 }
 .stack-card::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+  background: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 55%);
   pointer-events: none;
 }
 .card--coral  { background: var(--coral); }
 .card--teal   { background: var(--teal); }
 .card--mauve  { background: var(--mauve); }
-.card--yellow { background: var(--yellow); }
+.card--yellow { background: var(--yellow); color: var(--black); }
 
 .card-num {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 2px;
-  opacity: 0.6;
+  letter-spacing: 2.5px;
+  opacity: 0.55;
   text-transform: uppercase;
 }
 .card-icon {
-  font-size: 40px;
+  font-size: 44px;
   line-height: 1;
 }
 .card-title {
   font-family: 'Corben', serif;
   font-weight: 400;
-  font-size: 32px;
-  line-height: 1.1;
+  font-size: 36px;
+  line-height: 1.05;
   letter-spacing: -0.3px;
 }
-.card--yellow .card-title,
-.card--yellow .card-num { color: var(--black); }
-.card--yellow .card-desc { color: rgba(0,0,0,0.6); }
-
 .card-desc {
-  font-size: 14px;
-  line-height: 1.6;
-  opacity: 0.8;
+  font-size: 15px;
+  line-height: 1.65;
+  opacity: 0.78;
   font-weight: 400;
+  margin-top: 12px;
 }
 .card-cta {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.5px;
   text-transform: uppercase;
   opacity: 0.9;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: inherit;
+  padding: 0;
   transition: gap 0.2s;
 }
-.card-cta:hover { gap: 10px; }
+.card-cta:hover { gap: 14px; }
 
-/* Stack side info */
-.stack-info { padding: 20px 0; }
-.stack-counter {
-  font-family: 'Corben', serif;
-  font-weight: 400;
-  font-size: 72px;
-  line-height: 1;
-  color: var(--black);
-  letter-spacing: -2px;
-  margin-bottom: 8px;
-}
-.stack-counter span { color: var(--coral); }
-.stack-counter-label {
-  font-size: 13px;
-  color: #999;
-  font-weight: 500;
-  margin-bottom: 40px;
+/* Below-stack controls row */
+.stack-controls {
+  display: flex;
+  align-items: center;
+  gap: 28px;
 }
 .stack-nav {
   display: flex;
-  gap: 12px;
-  margin-bottom: 40px;
+  gap: 10px;
 }
 .stack-btn {
   width: 48px; height: 48px;
@@ -562,21 +560,172 @@ a { text-decoration: none; color: inherit; }
   border-color: var(--black);
   transform: scale(1.05);
 }
-.stack-titles {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.stack-title-item {
+.stack-counter {
   font-family: 'Corben', serif;
   font-weight: 400;
-  font-size: 20px;
-  letter-spacing: -0.2px;
-  color: #ccc;
-  transition: color 0.3s;
-  cursor: pointer;
+  font-size: 18px;
+  color: var(--black);
+  letter-spacing: -0.5px;
 }
-.stack-title-item.is-active { color: var(--black); }
+.stack-counter span { color: var(--coral); }
+.stack-hint {
+  font-size: 13px;
+  color: #aaa;
+  font-weight: 400;
+  margin-left: auto;
+}
+
+/* ── COVER MODAL ─────────────────────────────────── */
+.cover-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(12,14,20,0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s var(--ease-smooth);
+}
+.cover-modal-overlay.is-open {
+  opacity: 1;
+  pointer-events: all;
+}
+.cover-modal {
+  width: min(520px, 92vw);
+  height: 100vh;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  transform: translateX(40px);
+  transition: transform 0.4s var(--ease-out-expo);
+}
+.cover-modal-overlay.is-open .cover-modal {
+  transform: translateX(0);
+}
+.cover-modal-top {
+  padding: 48px 48px 36px;
+  position: relative;
+  flex-shrink: 0;
+}
+.cover-modal-close {
+  position: absolute;
+  top: 24px; right: 24px;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0,0,0,0.12);
+  background: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background 0.2s;
+  color: var(--black);
+}
+.cover-modal-close:hover { background: var(--cream); }
+.cover-modal-icon { font-size: 52px; margin-bottom: 20px; line-height: 1; }
+.cover-modal-tag {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--coral);
+  margin-bottom: 12px;
+}
+.cover-modal-title {
+  font-family: 'Corben', serif;
+  font-weight: 400;
+  font-size: clamp(36px, 5vw, 52px);
+  line-height: 1.0;
+  letter-spacing: -0.02em;
+  color: var(--black);
+  margin-bottom: 0;
+}
+.cover-modal-body {
+  padding: 0 48px 48px;
+  flex: 1;
+}
+.cover-modal-lead {
+  font-size: 17px;
+  line-height: 1.7;
+  color: #555;
+  margin-bottom: 36px;
+  font-weight: 400;
+}
+.cover-modal-points {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 48px;
+}
+.cover-modal-points li {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #444;
+}
+.cover-modal-points li::before {
+  content: '✓';
+  width: 24px; height: 24px;
+  background: var(--coral);
+  color: white;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.cover-modal-cta {
+  background: var(--black);
+  border-radius: 20px;
+  padding: 36px 32px;
+}
+.cover-modal-cta-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 10px;
+}
+.cover-modal-cta-heading {
+  font-family: 'Corben', serif;
+  font-weight: 400;
+  font-size: 26px;
+  color: white;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+.cover-modal-cta-sub {
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+.cover-modal-cta-btns {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.btn--white {
+  background: white;
+  color: var(--black);
+  font-weight: 700;
+}
+.btn--white:hover { box-shadow: 0 8px 24px rgba(255,255,255,0.25); }
+.btn--ghost-white {
+  background: transparent;
+  color: rgba(255,255,255,0.65);
+  border: 1.5px solid rgba(255,255,255,0.2);
+}
+.btn--ghost-white:hover { color: white; border-color: rgba(255,255,255,0.6); }
 
 /* ── SKYE TV ─────────────────────────────────────── */
 .skye-tv {
@@ -1078,78 +1227,90 @@ footer {
         <span class="reveal-line"><span class="inner"><em>Coverage.</em></span></span>
       </h2>
     </div>
-    <p class="section-sub">Drag or tap the cards to explore each type of cover we advise on.</p>
   </div>
 
   <div class="stack-layout">
-    <!-- Card stack -->
-    <div class="stack-container" id="card-stack">
-      <div class="stack-card card--coral" data-index="0">
-        <div>
+    <div class="stack-stage">
+      <!-- Card stack -->
+      <div class="stack-container" id="card-stack">
+        <div class="stack-card card--coral" data-index="0">
           <div class="card-num">01 / 04</div>
+          <div class="card-icon">🛡️</div>
+          <div>
+            <div class="card-title">Income Protection</div>
+            <div class="card-desc">Your income is your greatest asset. If illness or injury stops you working, we make sure your life doesn't stop too.</div>
+          </div>
+          <button class="card-cta" data-modal="0">Learn more →</button>
         </div>
-        <div class="card-icon">🛡️</div>
-        <div>
-          <div class="card-title">Income<br>Protection</div>
-          <div class="card-desc" style="margin-top:12px">Your income is your greatest asset. If illness or injury stops you working, we make sure your life doesn't stop too.</div>
-        </div>
-        <a href="https://www.skye.com.au/life-insurance-advice" class="card-cta">Learn more →</a>
-      </div>
 
-      <div class="stack-card card--teal" data-index="1">
-        <div>
+        <div class="stack-card card--teal" data-index="1">
           <div class="card-num">02 / 04</div>
+          <div class="card-icon">⚓</div>
+          <div>
+            <div class="card-title">TPD Cover</div>
+            <div class="card-desc">If you're permanently unable to work, TPD cover clears debts, covers care costs and rebuilds your financial foundation.</div>
+          </div>
+          <button class="card-cta" data-modal="1">Learn more →</button>
         </div>
-        <div class="card-icon">⚓</div>
-        <div>
-          <div class="card-title">TPD<br>Cover</div>
-          <div class="card-desc" style="margin-top:12px">If you're permanently unable to work, TPD cover clears debts, covers care costs and rebuilds your financial foundation.</div>
-        </div>
-        <a href="https://www.skye.com.au/life-insurance-advice" class="card-cta">Learn more →</a>
-      </div>
 
-      <div class="stack-card card--mauve" data-index="2">
-        <div>
+        <div class="stack-card card--mauve" data-index="2">
           <div class="card-num">03 / 04</div>
+          <div class="card-icon">🏠</div>
+          <div>
+            <div class="card-title">Death Cover</div>
+            <div class="card-desc">Protect the people who depend on you. A lump sum that keeps your family's future secure when it matters most.</div>
+          </div>
+          <button class="card-cta" data-modal="2">Learn more →</button>
         </div>
-        <div class="card-icon">🏠</div>
-        <div>
-          <div class="card-title">Death<br>Cover</div>
-          <div class="card-desc" style="margin-top:12px">Protect the people who depend on you. A lump sum that keeps your family's future secure when it matters most.</div>
-        </div>
-        <a href="https://www.skye.com.au/life-insurance-advice" class="card-cta">Learn more →</a>
-      </div>
 
-      <div class="stack-card card--yellow" data-index="3">
-        <div>
+        <div class="stack-card card--yellow" data-index="3">
           <div class="card-num">04 / 04</div>
+          <div class="card-icon">❤️</div>
+          <div>
+            <div class="card-title">Trauma Cover</div>
+            <div class="card-desc">Cancer, heart attack, stroke — an immediate payment so you can focus entirely on recovery, not bills.</div>
+          </div>
+          <button class="card-cta" data-modal="3">Learn more →</button>
         </div>
-        <div class="card-icon">❤️</div>
-        <div>
-          <div class="card-title">Trauma<br>Cover</div>
-          <div class="card-desc" style="margin-top:12px">Cancer, heart attack, stroke — an immediate payment so you can focus entirely on recovery, not bills.</div>
-        </div>
-        <a href="https://www.skye.com.au/life-insurance-advice" class="card-cta">Learn more →</a>
       </div>
     </div>
 
-    <!-- Stack info panel -->
-    <div class="stack-info">
-      <div class="stack-counter"><span id="stack-current">01</span> / <span style="opacity:0.3">04</span></div>
-      <div class="stack-counter-label">Cover type</div>
+    <!-- Controls row below stack -->
+    <div class="stack-controls">
       <div class="stack-nav">
         <button class="stack-btn" id="stack-prev" aria-label="Previous">←</button>
         <button class="stack-btn" id="stack-next" aria-label="Next">→</button>
       </div>
-      <div class="stack-titles" id="stack-titles">
-        <div class="stack-title-item is-active" data-idx="0">Income Protection</div>
-        <div class="stack-title-item" data-idx="1">TPD Cover</div>
-        <div class="stack-title-item" data-idx="2">Death Cover</div>
-        <div class="stack-title-item" data-idx="3">Trauma Cover</div>
-      </div>
+      <div class="stack-counter"><span id="stack-current">01</span><span style="opacity:0.3"> / 04</span></div>
+      <span class="stack-hint">Drag or tap to explore cover types</span>
     </div>
   </div>
 </section>
+
+<!-- COVER MODAL -->
+<div class="cover-modal-overlay" id="cover-modal-overlay">
+  <div class="cover-modal" id="cover-modal">
+    <div class="cover-modal-top">
+      <button class="cover-modal-close" id="cover-modal-close">✕</button>
+      <div class="cover-modal-icon" id="modal-icon"></div>
+      <div class="cover-modal-tag" id="modal-tag"></div>
+      <h2 class="cover-modal-title" id="modal-title"></h2>
+    </div>
+    <div class="cover-modal-body">
+      <p class="cover-modal-lead" id="modal-lead"></p>
+      <ul class="cover-modal-points" id="modal-points"></ul>
+      <div class="cover-modal-cta">
+        <div class="cover-modal-cta-eyebrow">Ready to find out where you stand?</div>
+        <div class="cover-modal-cta-heading" id="modal-cta-heading"></div>
+        <div class="cover-modal-cta-sub">A free 15-minute call. No pressure, no jargon — just clarity.</div>
+        <div class="cover-modal-cta-btns">
+          <a href="https://www.skye.com.au/phone-call" class="btn btn--white">Book a free call</a>
+          <a href="https://www.skye.com.au/life-insurance-advice" class="btn btn--ghost-white">Know where you stand →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- SKYE TV -->
 <section class="skye-tv" id="skye-tv">
@@ -1584,29 +1745,109 @@ gsap.from('.services .section-label', {
   scrollTrigger: { trigger: '.services', start: 'top 78%' },
   x: -24, opacity: 0, duration: 0.7, ease: 'power3.out'
 });
-gsap.from('.section-sub', {
-  scrollTrigger: { trigger: '.services', start: 'top 75%' },
-  y: 20, opacity: 0, duration: 0.7, ease: 'power3.out', delay: 0.3
-});
-
 /* Card stack entrance */
 gsap.from('#card-stack', {
   scrollTrigger: { trigger: '#card-stack', start: 'top 82%' },
   x: -60, opacity: 0, duration: 1, ease: 'power4.out'
 });
-gsap.from('.stack-info', {
+gsap.from('.stack-controls', {
   scrollTrigger: { trigger: '#card-stack', start: 'top 82%' },
-  x: 40, opacity: 0, duration: 1, ease: 'power4.out', delay: 0.15
+  y: 20, opacity: 0, duration: 0.8, ease: 'power3.out', delay: 0.2
 });
 
 /* ════════════════════════════════════════════════
-   10. CARD STACK — drag & click interaction
+   10. CARD STACK — drag & modal interaction
 ════════════════════════════════════════════════ */
 (function() {
+  /* ── Modal data ── */
+  const modalData = [
+    {
+      icon: '🛡️',
+      tag: 'Income Protection',
+      title: 'Income Protection',
+      lead: 'Your income is your single greatest financial asset. Income protection insurance replaces up to 70% of your salary if illness or injury stops you from working — so your mortgage, your lifestyle and your family\'s future stay intact.',
+      points: [
+        'Covers up to 70% of your pre-tax income',
+        'Benefit periods from 2 years to age 65',
+        'Waiting periods tailored to your budget',
+        'Covers illness, injury and mental health conditions',
+        'Premiums can be tax-deductible',
+      ],
+      ctaHeading: 'Know your income is protected.',
+    },
+    {
+      icon: '⚓',
+      tag: 'TPD Cover',
+      title: 'Total & Permanent Disablement',
+      lead: 'If you\'re permanently unable to work due to illness or injury, TPD cover pays a lump sum to clear debts, cover ongoing care costs and rebuild your financial foundation — without draining your super.',
+      points: [
+        'Lump sum payment — no repayments, ever',
+        'Covers mortgage, debts and care costs',
+        'Own occupation vs any occupation definitions',
+        'Can be held inside or outside of super',
+        'Tailored to your specific occupation risk',
+      ],
+      ctaHeading: 'Understand your TPD options.',
+    },
+    {
+      icon: '🏠',
+      tag: 'Death Cover',
+      title: 'Death Cover',
+      lead: 'Death cover pays a tax-free lump sum to the people who depend on you when you\'re gone. It clears your mortgage, funds your children\'s education and gives your family time to grieve — not stress about money.',
+      points: [
+        'Tax-free lump sum to your beneficiaries',
+        'Clears mortgage and outstanding debts',
+        'Funds children\'s education and future',
+        'Includes terminal illness benefit',
+        'Structured to minimise estate complications',
+      ],
+      ctaHeading: 'Make sure your family is covered.',
+    },
+    {
+      icon: '❤️',
+      tag: 'Trauma Cover',
+      title: 'Trauma Cover',
+      lead: 'A cancer diagnosis, heart attack or stroke shouldn\'t also be a financial crisis. Trauma cover pays an immediate lump sum so you can step back from work, access the best treatment and focus entirely on recovery.',
+      points: [
+        'Immediate cash — no waiting for recovery',
+        'Covers 40+ critical illness conditions',
+        'Pay for treatment not covered by Medicare',
+        'Independent from your income or super',
+        'Can be combined with life or TPD cover',
+      ],
+      ctaHeading: 'Know where you stand on trauma.',
+    },
+  ];
+
+  const overlay    = document.getElementById('cover-modal-overlay');
+  const closeBtn   = document.getElementById('cover-modal-close');
+
+  function openModal(idx) {
+    const d = modalData[idx];
+    document.getElementById('modal-icon').textContent  = d.icon;
+    document.getElementById('modal-tag').textContent   = d.tag;
+    document.getElementById('modal-title').textContent = d.title;
+    document.getElementById('modal-lead').textContent  = d.lead;
+    document.getElementById('modal-cta-heading').textContent = d.ctaHeading;
+    const ul = document.getElementById('modal-points');
+    ul.innerHTML = d.points.map(p => `<li>${p}</li>`).join('');
+    overlay.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    overlay.classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+
+  closeBtn.addEventListener('click', closeModal);
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  /* ── Card stack logic ── */
   const container = document.getElementById('card-stack');
   const cards = [...container.querySelectorAll('.stack-card')];
   const counter = document.getElementById('stack-current');
-  const titleItems = [...document.querySelectorAll('.stack-title-item')];
   let current = 0;
   let isDragging = false;
   let startX = 0;
@@ -1618,32 +1859,24 @@ gsap.from('.stack-info', {
     cards.forEach((card, i) => {
       const pos = (i - current + cards.length) % cards.length;
       const props = {
-        x: pos * 16,
-        y: pos * 12,
-        rotation: pos * 4,
-        scale: 1 - pos * 0.055,
+        x: pos * 18, y: pos * 14, rotation: pos * 3.5,
+        scale: 1 - pos * 0.05,
         zIndex: cards.length - pos,
-        opacity: pos === 0 ? 1 : pos === 1 ? 0.82 : pos === 2 ? 0.58 : 0.35,
+        opacity: pos === 0 ? 1 : pos === 1 ? 0.8 : pos === 2 ? 0.55 : 0.3,
       };
-      if (animate) {
-        gsap.to(card, { ...props, duration: 0.55, ease: 'back.out(1.5)' });
-      } else {
-        gsap.set(card, props);
-      }
+      animate ? gsap.to(card, { ...props, duration: 0.55, ease: 'back.out(1.5)' })
+              : gsap.set(card, props);
     });
     counter.textContent = pad(current);
-    titleItems.forEach((t, i) => t.classList.toggle('is-active', i === current));
   }
 
   function advance(dir) {
     const top = cards[current];
-    const flyX = dir === 'next' ? -520 : 520;
+    const flyX = dir === 'next' ? -560 : 560;
     gsap.to(top, { x: flyX, rotation: flyX > 0 ? -28 : 28, opacity: 0, duration: 0.42, ease: 'power2.in',
       onComplete: () => {
         gsap.set(top, { x: 0, y: 0, rotation: 0, opacity: 1 });
-        current = dir === 'next'
-          ? (current + 1) % cards.length
-          : (current - 1 + cards.length) % cards.length;
+        current = dir === 'next' ? (current + 1) % cards.length : (current - 1 + cards.length) % cards.length;
         layout(true);
       }
     });
@@ -1652,23 +1885,17 @@ gsap.from('.stack-info', {
   document.getElementById('stack-next').addEventListener('click', () => advance('next'));
   document.getElementById('stack-prev').addEventListener('click', () => advance('prev'));
 
-  titleItems.forEach((item, i) => {
-    item.addEventListener('click', () => {
-      if (i === current) return;
-      const top = cards[current];
-      gsap.to(top, { x: -520, rotation: -28, opacity: 0, duration: 0.42, ease: 'power2.in',
-        onComplete: () => {
-          gsap.set(top, { x: 0, y: 0, rotation: 0, opacity: 1 });
-          current = i;
-          layout(true);
-        }
-      });
+  /* Learn more buttons → open modal */
+  container.querySelectorAll('.card-cta').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      openModal(parseInt(btn.dataset.modal));
     });
   });
 
   /* Drag */
   container.addEventListener('pointerdown', e => {
-    if (e.target.tagName === 'A') return;
+    if (e.target.closest('.card-cta')) return;
     isDragging = true;
     startX = e.clientX;
     dragX = 0;
@@ -1677,7 +1904,7 @@ gsap.from('.stack-info', {
   container.addEventListener('pointermove', e => {
     if (!isDragging) return;
     dragX = e.clientX - startX;
-    gsap.set(cards[current], { x: dragX, rotation: dragX * 0.07 });
+    gsap.set(cards[current], { x: dragX, rotation: dragX * 0.06 });
   });
   container.addEventListener('pointerup', () => {
     if (!isDragging) return;
