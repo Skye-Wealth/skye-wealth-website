@@ -71,11 +71,12 @@ a { text-decoration: none; color: inherit; }
   box-shadow: 0 1px 0 rgba(0,0,0,0.07);
 }
 .nav-logo img {
-  height: 34px;
+  height: 28px;
   width: auto;
   filter: brightness(0) invert(1);
   transition: filter 0.5s var(--ease-smooth);
 }
+/* on light nav, restore the coral colour from the SVG */
 .nav.is-light .nav-logo img { filter: none; }
 
 .nav-links {
@@ -177,6 +178,19 @@ a { text-decoration: none; color: inherit; }
 .hero-heading em {
   font-style: normal;
   color: rgba(255,255,255,0.55);
+}
+
+/* ── HERO LOGO DISPLAY ──────────────────────────── */
+.hero-logo-display {
+  position: relative;
+  z-index: 1;
+  margin-bottom: auto;
+  padding-top: 140px; /* clears fixed nav */
+}
+.hero-logo-img {
+  width: clamp(160px, 28vw, 380px);
+  height: auto;
+  filter: brightness(0) invert(1);
 }
 
 /* "Simplified." — starts invisible (matches hero coral bg), fades to yellow */
@@ -1006,7 +1020,7 @@ footer {
 <!-- NAV -->
 <nav class="nav" id="nav">
   <a href="https://www.skye.com.au/" class="nav-logo">
-    <img src="https://images.squarespace-cdn.com/content/v1/5f449b1dad7e83270786baa8/1598331859086-TFA4TGNJQ3WU3DTWHN42/SKYE_logo.png?format=1500w" alt="Skye Wealth">
+    <img src="logo-text.svg" alt="Skye Wealth">
   </a>
   <ul class="nav-links">
     <li><a href="https://www.skye.com.au/life-insurance-advice" class="nav-link">Life Insurance</a></li>
@@ -1022,8 +1036,8 @@ footer {
 <section class="hero" id="hero">
   <canvas id="hero-canvas"></canvas>
 
-  <div class="hero-badge">
-    Personalised Life Insurance Advice · Australia
+  <div class="hero-logo-display">
+    <img src="logo-text.svg" alt="Skye Wealth" class="hero-logo-img">
   </div>
 
   <h1 class="hero-heading">
@@ -1373,7 +1387,7 @@ footer {
   <div class="footer-top">
     <div>
       <a href="https://www.skye.com.au/" class="footer-logo">
-        <img src="https://images.squarespace-cdn.com/content/v1/5f449b1dad7e83270786baa8/1598331859086-TFA4TGNJQ3WU3DTWHN42/SKYE_logo.png?format=1500w" alt="Skye Wealth">
+        <img src="logo-text.svg" alt="Skye Wealth">
       </a>
       <p class="footer-tagline">Personalised life insurance advice for Australians. Always transparent, always on your side.</p>
       <a href="https://www.skye.com.au/phone-call" class="btn btn--coral" style="font-size:13px;padding:11px 24px">Book a call →</a>
@@ -1531,7 +1545,7 @@ gsap.from(nav, { y: -70, opacity: 0, duration: 1, ease: 'power3.out', delay: 0.1
 ════════════════════════════════════════════════ */
 const heroTL = gsap.timeline({ delay: 0.25 });
 heroTL
-  .from('.hero-badge', { y: 20, opacity: 0, duration: 0.8, ease: 'power3.out' })
+  .from('.hero-logo-img', { y: -24, opacity: 0, duration: 1.0, ease: 'power3.out' })
   .from('.hero-heading .inner', {
     y: '105%',
     duration: 1,
