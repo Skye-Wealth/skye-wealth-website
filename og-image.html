@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1200px; height: 630px; overflow: hidden;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: #f26861;
+    position: relative;
+  }
+
+  /* Aurora blobs */
+  .blob {
+    position: absolute; border-radius: 50%;
+    filter: blur(80px); pointer-events: none;
+  }
+  .b1 { width: 500px; height: 400px; background: rgba(255,255,255,.18); top: -60px; right: 80px; }
+  .b2 { width: 380px; height: 380px; background: rgba(192,57,43,.45);   bottom: -80px; right: -40px; }
+  .b3 { width: 320px; height: 320px; background: rgba(254,226,144,.25); top: 40px; left: 200px; }
+
+  .frame {
+    position: relative; z-index: 1;
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    justify-content: space-between;
+    padding: 64px 80px;
+  }
+
+  .logo {
+    font-size: 28px; font-weight: 300; color: rgba(255,255,255,.9);
+    letter-spacing: -0.5px;
+  }
+
+  .copy { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+
+  .eyebrow {
+    font-size: 13px; font-weight: 700; letter-spacing: 3px;
+    text-transform: uppercase; color: rgba(255,255,255,.55);
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Corben', serif; font-weight: 400;
+    font-size: 84px; line-height: 1.0; letter-spacing: -0.03em;
+    color: #fff;
+  }
+  h1 em { font-style: normal; color: #fee290; }
+
+  .sub {
+    margin-top: 24px; font-size: 20px; line-height: 1.55;
+    color: rgba(255,255,255,.6); max-width: 560px;
+  }
+
+  .footer {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .pill {
+    background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.3);
+    border-radius: 100px; padding: 10px 24px;
+    font-size: 14px; font-weight: 600; color: #fff; letter-spacing: -.2px;
+  }
+  .url { font-size: 14px; color: rgba(255,255,255,.4); }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Corben:wght@400&family=Plus+Jakarta+Sans:wght@300;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+
+  <div class="frame">
+    <div class="logo">Skye Wealth</div>
+
+    <div class="copy">
+      <div class="eyebrow">Life Insurance Advice</div>
+      <h1>Life Insurance,<br><em>Simplified.</em></h1>
+      <p class="sub">Expert advice for Australians. Zero jargon, always in your corner.</p>
+    </div>
+
+    <div class="footer">
+      <div class="pill">Book a free call →</div>
+      <div class="url">skye-wealth.com</div>
+    </div>
+  </div>
+</body>
+</html>
