@@ -195,8 +195,9 @@ async function init() {
   const grid    = document.getElementById('blog-grid');
   const filters = document.getElementById('filters');
 
-  // Load categories and populate filter bar
-  const cats = await fetchCategories();
+  // Load categories and populate filter bar (non-fatal if it fails)
+  let cats = [];
+  try { cats = await fetchCategories(); } catch(e) { console.warn('Categories unavailable:', e); }
   cats.forEach(cat => {
     const btn = document.createElement('button');
     btn.className = 'filter-btn';
@@ -208,10 +209,15 @@ async function init() {
   // Load and render posts
   async function load(cat = 'all') {
     grid.innerHTML = `<div class="blog-loading"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>`;
-    const posts = await fetchPosts(cat);
-    grid.innerHTML = posts.length
-      ? posts.map(renderCard).join('')
-      : `<div class="blog-empty">No posts yet — check back soon.</div>`;
+    try {
+      const posts = await fetchPosts(cat);
+      grid.innerHTML = posts.length
+        ? posts.map(renderCard).join('')
+        : `<div class="blog-empty">No posts yet — check back soon.</div>`;
+    } catch(e) {
+      console.error('Blog fetch failed:', e);
+      grid.innerHTML = `<div class="blog-empty">Could not load posts. Please try again shortly.</div>`;
+    }
   }
 
   // Filter clicks
