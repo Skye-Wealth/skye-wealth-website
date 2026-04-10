@@ -455,12 +455,11 @@ footer{background:#080a0f;padding:80px 48px 40px}
   .nav{padding:12px 24px}
   .nav-links{display:none}
   .hero{padding:0 24px 56px}
+  .hero-bottom{flex-direction:column;align-items:flex-start;gap:24px}
+  .hero-sub{max-width:100%}
+  .hero-actions{width:100%}
   .statement,.services,.why,.testimonials,.cta-section{padding:80px 24px}
   .statement-body,.statement-stats{grid-template-columns:1fr}
-  .stack-stage{grid-template-columns:1fr!important;gap:24px!important}
-  .stack-container,.stack-card{width:100%;min-width:0}
-  .cover-panel{opacity:1!important;pointer-events:all!important;transform:none!important}
-  .cover-glass{height:auto}
   .tv-featured-grid{grid-template-columns:1fr}
   .tv-grid{grid-template-columns:repeat(2,1fr)}
   .why-grid,.test-grid{grid-template-columns:1fr}

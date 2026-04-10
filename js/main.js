@@ -14,67 +14,56 @@ ScrollTrigger.create({
   onLeaveBack: () => nav.classList.remove('is-glass'),
 });
 
-/* ── HERO AURORA ─────────────────────────────────── */
-(function() {
-  const canvas = document.getElementById('hero-canvas');
+/* ── AURORA FACTORY ──────────────────────────────── */
+function makeAurora(id, orbs) {
+  const canvas = document.getElementById(id);
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  let W, H;
-  function resize() { W = canvas.width = canvas.offsetWidth; H = canvas.height = canvas.offsetHeight; }
-  resize();
-  window.addEventListener('resize', resize);
-  const orbs = [
-    { color:'#ffffff', cx:.75, cy:.20, rx:.18, ry:.12, r:.55, spd:.00028, ph:0.0, a0:'55', a1:'20' },
-    { color:'#ffffff', cx:.20, cy:.65, rx:.14, ry:.14, r:.45, spd:.00022, ph:2.1, a0:'40', a1:'10' },
-    { color:'#c0392b', cx:.85, cy:.70, rx:.15, ry:.18, r:.50, spd:.00035, ph:1.4, a0:'50', a1:'18' },
-    { color:'#fee290', cx:.45, cy:.12, rx:.10, ry:.10, r:.35, spd:.00044, ph:3.8, a0:'45', a1:'12' },
-    { color:'#c0392b', cx:.10, cy:.30, rx:.10, ry:.15, r:.40, spd:.00038, ph:5.0, a0:'45', a1:'10' },
-    { color:'#ffffff', cx:.55, cy:.85, rx:.12, ry:.08, r:.30, spd:.00050, ph:4.4, a0:'35', a1:'08' },
-  ];
-  let t = 0;
-  function draw() {
-    t += 16; ctx.clearRect(0, 0, W, H);
-    orbs.forEach(o => {
-      const x = W * o.cx + Math.cos(t * o.spd + o.ph) * W * o.rx;
-      const y = H * o.cy + Math.sin(t * o.spd * 1.3 + o.ph) * H * o.ry;
-      const r = Math.min(W, H) * o.r;
-      const g = ctx.createRadialGradient(x, y, 0, x, y, r);
-      g.addColorStop(0, o.color + o.a0); g.addColorStop(.5, o.color + o.a1); g.addColorStop(1, o.color + '00');
-      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
-    });
-    requestAnimationFrame(draw);
-  }
-  draw();
-})();
+  let W, H, rafId;
 
-/* ── CTA AURORA ──────────────────────────────────── */
-(function() {
-  const canvas = document.getElementById('cta-canvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  let W, H;
   function resize() { W = canvas.width = canvas.offsetWidth; H = canvas.height = canvas.offsetHeight; }
   resize();
-  window.addEventListener('resize', resize);
-  const orbs = [
-    { color:'#f26861', cx:.2, cy:.5, rx:.3, ry:.3, r:.6, spd:.00028, ph:0 },
-    { color:'#c39bbd', cx:.8, cy:.5, rx:.3, ry:.3, r:.5, spd:.00022, ph:2 },
-  ];
-  let t = 0;
-  function draw() {
-    t += 16; ctx.clearRect(0, 0, W, H);
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(resize, 120);
+  }, { passive: true });
+
+  function draw(ts) {
+    ctx.clearRect(0, 0, W, H);
     orbs.forEach(o => {
-      const x = W * o.cx + Math.cos(t * o.spd + o.ph) * W * o.rx;
-      const y = H * o.cy + Math.sin(t * o.spd + o.ph) * H * o.ry;
+      const x = W * o.cx + Math.cos(ts * o.spd + o.ph) * W * o.rx;
+      const y = H * o.cy + Math.sin(ts * o.spd * 1.3 + o.ph) * H * o.ry;
       const r = Math.min(W, H) * o.r;
       const g = ctx.createRadialGradient(x, y, 0, x, y, r);
-      g.addColorStop(0, o.color + '28'); g.addColorStop(1, o.color + '00');
+      g.addColorStop(0, o.color + (o.a0 || '28'));
+      g.addColorStop(o.a1 ? .5 : 1, o.color + (o.a1 || '00'));
+      if (o.a1) g.addColorStop(1, o.color + '00');
       ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
     });
-    requestAnimationFrame(draw);
+    rafId = requestAnimationFrame(draw);
   }
-  draw();
-})();
+
+  // Pause when scrolled out of view
+  new IntersectionObserver(([e]) => {
+    if (e.isIntersecting) { rafId = requestAnimationFrame(draw); }
+    else { cancelAnimationFrame(rafId); }
+  }, { threshold: 0 }).observe(canvas);
+}
+
+makeAurora('hero-canvas', [
+  { color:'#ffffff', cx:.75, cy:.20, rx:.18, ry:.12, r:.55, spd:.00028, ph:0.0, a0:'55', a1:'20' },
+  { color:'#ffffff', cx:.20, cy:.65, rx:.14, ry:.14, r:.45, spd:.00022, ph:2.1, a0:'40', a1:'10' },
+  { color:'#c0392b', cx:.85, cy:.70, rx:.15, ry:.18, r:.50, spd:.00035, ph:1.4, a0:'50', a1:'18' },
+  { color:'#fee290', cx:.45, cy:.12, rx:.10, ry:.10, r:.35, spd:.00044, ph:3.8, a0:'45', a1:'12' },
+  { color:'#c0392b', cx:.10, cy:.30, rx:.10, ry:.15, r:.40, spd:.00038, ph:5.0, a0:'45', a1:'10' },
+  { color:'#ffffff', cx:.55, cy:.85, rx:.12, ry:.08, r:.30, spd:.00050, ph:4.4, a0:'35', a1:'08' },
+]);
+
+makeAurora('cta-canvas', [
+  { color:'#f26861', cx:.2, cy:.5, rx:.3, ry:.3, r:.6, spd:.00028, ph:0 },
+  { color:'#c39bbd', cx:.8, cy:.5, rx:.3, ry:.3, r:.5, spd:.00022, ph:2 },
+]);
 
 /* ── SPLASH → HERO SEQUENCE ──────────────────────── */
 const splash      = document.getElementById('splash');
