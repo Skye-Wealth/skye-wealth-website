@@ -5,4 +5,5 @@ export default defineCliConfig({
     projectId: 'f0yrya1r',
     dataset: 'production',
   },
+  studioHost: 'skye-wealth',
 })
