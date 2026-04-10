@@ -461,10 +461,110 @@ footer{background:#080a0f;padding:80px 48px 40px}
 .pop-in{opacity:0;transform:scale(.92) translateY(20px);transition:opacity .6s var(--expo),transform .6s var(--expo)}
 .pop-in.visible{opacity:1;transform:none}
 
+/* ── MOBILE MENU ─────────────────────────────────── */
+.mob-btn{
+  display:none;
+  flex-direction:column;justify-content:center;gap:5px;
+  width:40px;height:40px;padding:8px;flex-shrink:0;
+  background:none;border:none;cursor:pointer;
+  color:rgba(255,255,255,.85);
+  transition:color .35s var(--smooth);
+  -webkit-tap-highlight-color:transparent;
+}
+.nav.is-glass .mob-btn{color:var(--black)}
+.nav.is-glass.nav--on-dark .mob-btn{color:rgba(255,255,255,.85)}
+.mob-line{
+  display:block;height:1.5px;width:100%;
+  background:currentColor;border-radius:2px;
+  transition:transform .45s cubic-bezier(.76,0,.24,1),opacity .2s ease;
+  transform-origin:center;
+}
+.mob-btn.is-open .l1{transform:translateY(3.25px) rotate(45deg)}
+.mob-btn.is-open .l2{transform:translateY(-3.25px) rotate(-45deg)}
+
+.mob-menu{
+  position:fixed;inset:0;z-index:7900;
+  display:flex;flex-direction:column;
+  background:var(--cream);
+  clip-path:inset(0% 0% 100% 0%);
+  transition:clip-path .65s cubic-bezier(.76,0,.24,1);
+  pointer-events:none;overflow:hidden;
+}
+.mob-menu::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 55% at 95% 5%,rgba(242,104,97,.13) 0%,transparent 65%),
+    radial-gradient(ellipse 60% 50% at 5% 95%,rgba(121,200,191,.10) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 40% at 50% 50%,rgba(254,226,144,.06) 0%,transparent 70%);
+}
+.mob-menu.is-open{clip-path:inset(0% 0% 0% 0%);pointer-events:all}
+
+.mob-inner{
+  position:relative;z-index:1;
+  display:flex;flex-direction:column;justify-content:space-between;
+  height:100%;padding:96px 32px 48px;
+}
+
+.mob-links{list-style:none;display:flex;flex-direction:column}
+
+.mob-item{
+  transform:translateY(48px);opacity:0;
+  transition:transform .55s cubic-bezier(.22,1,.36,1),opacity .45s ease;
+  border-bottom:1px solid rgba(0,0,0,.07);
+}
+.mob-item:first-child{border-top:1px solid rgba(0,0,0,.07)}
+.mob-menu.is-open .mob-item{transform:translateY(0);opacity:1}
+.mob-menu.is-open .mob-item:nth-child(1){transition-delay:.20s}
+.mob-menu.is-open .mob-item:nth-child(2){transition-delay:.27s}
+.mob-menu.is-open .mob-item:nth-child(3){transition-delay:.34s}
+.mob-menu.is-open .mob-item:nth-child(4){transition-delay:.41s}
+.mob-menu.is-open .mob-item:nth-child(5){transition-delay:.48s}
+.mob-menu.is-open .mob-item:nth-child(6){transition-delay:.55s}
+
+.mob-link{
+  display:flex;align-items:center;gap:20px;
+  padding:18px 0;text-decoration:none;color:var(--black);
+}
+.mob-num{
+  font-size:11px;font-weight:700;letter-spacing:2px;
+  color:var(--coral);opacity:.55;min-width:22px;flex-shrink:0;
+}
+.mob-name{
+  font-family:'Corben',serif;font-weight:400;
+  font-size:clamp(26px,7.5vw,38px);letter-spacing:-.02em;
+  transition:color .2s ease;
+}
+.mob-link:hover .mob-name,.mob-link.is-active .mob-name{color:var(--coral)}
+
+.mob-footer{
+  transform:translateY(28px);opacity:0;
+  transition:transform .5s cubic-bezier(.22,1,.36,1),opacity .4s ease;
+  display:flex;flex-direction:column;gap:20px;
+}
+.mob-menu.is-open .mob-footer{transform:translateY(0);opacity:1;transition-delay:.60s}
+
+.mob-cta-btn{
+  display:inline-flex;align-items:center;align-self:flex-start;
+  background:var(--coral);color:#fff;
+  padding:16px 32px;border-radius:100px;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:15px;font-weight:700;text-decoration:none;letter-spacing:-.01em;
+  box-shadow:0 8px 24px rgba(242,104,97,.32);
+  transition:background .2s,transform .2s;
+}
+.mob-cta-btn:hover{background:#e05550;transform:translateY(-2px)}
+
+.mob-tagline{
+  font-family:'Corben',serif;font-size:14px;font-weight:400;
+  color:rgba(0,0,0,.28);letter-spacing:-.01em;
+}
+
 /* ── RESPONSIVE ─────────────────────────────────── */
 @media(max-width:900px){
   .nav{padding:12px 24px}
   .nav-links{display:none}
+  .nav-cta{display:none}
+  .mob-btn{display:flex}
   .hero{padding:0 24px 56px}
   .hero-bottom{flex-direction:column;align-items:flex-start;gap:24px}
   .hero-sub{max-width:100%}
