@@ -153,34 +153,42 @@ body{
 .stat-num em{color:var(--coral);font-style:normal}
 .stat-label{font-size:13px;color:#999;margin-top:6px;font-weight:500}
 
-/* ── SERVICES (horizontal scroll) ───────────────── */
-.services{background:var(--cream);overflow:hidden}
-.services-head{padding:120px 48px 56px}
+/* ── SERVICES (sticky stack) ─────────────────────── */
+.services{background:var(--cream)}
+.services-head{padding:120px 48px 64px}
 .section-header{margin-bottom:72px}
 
-.services-viewport{overflow:hidden;width:100%}
-
-.services-track{
-  display:flex;
-  flex-flow:row nowrap;
-  gap:20px;
-  padding:0 max(24px,calc((100vw - min(80vw,920px)) / 2));
-  will-change:transform;
+.svc-heading{
+  font-family:'Corben',serif;font-weight:400;
+  font-size:clamp(48px,7vw,96px);line-height:1.0;letter-spacing:-.02em;
+  color:var(--black);
 }
+.svc-heading em{font-style:normal;color:var(--coral)}
+
+.svc-stack{position:relative;padding-bottom:80px}
+
+.svc-sticky{
+  position:sticky;
+  top:80px;
+  z-index:calc(var(--i,0) + 1);
+  padding:0 48px;
+  margin-bottom:48vh;
+}
+.svc-sticky:last-child{margin-bottom:0}
 
 .svc-card{
-  flex-shrink:0;
-  width:min(80vw,920px);
+  width:100%;
+  min-height:calc(100vh - 80px - 40px);
   border-radius:32px;
   padding:56px 64px;
   display:grid;
-  grid-template-columns:1fr 240px;
+  grid-template-columns:1fr 260px;
   gap:48px;
   align-items:center;
   color:white;
   overflow:hidden;
   position:relative;
-  box-shadow:0 24px 72px rgba(0,0,0,.14);
+  box-shadow:0 32px 80px rgba(0,0,0,.18);
 }
 .svc-card::before{
   content:'';position:absolute;inset:0;pointer-events:none;
@@ -242,16 +250,6 @@ body{
 .svc-stat-num span{font-size:22px;letter-spacing:-.01em}
 .svc-stat-label{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;opacity:.7}
 
-/* Progress dots */
-.svc-dots{display:flex;justify-content:center;gap:8px;padding:32px 0 48px}
-.svc-dot{
-  width:8px;height:8px;border-radius:100px;
-  background:rgba(0,0,0,.18);
-  transition:background .3s ease,width .3s cubic-bezier(.34,1.56,.64,1);
-  display:block;
-}
-.svc-dot.is-active{background:var(--coral);width:24px}
-
 /* White CTA button for coloured card backgrounds */
 .btn--white{
   background:white;color:var(--black);border:none;
@@ -267,10 +265,8 @@ body{
 /* Mobile */
 @media(max-width:900px){
   .services-head{padding:80px 24px 40px}
-  .services-viewport{overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-  .services-viewport::-webkit-scrollbar{display:none}
-  .services-track{padding:0 24px}
-  .svc-card{width:85vw;grid-template-columns:1fr;padding:40px 32px;scroll-snap-align:center}
+  .svc-sticky{padding:0 16px;margin-bottom:32px;position:relative;top:auto}
+  .svc-card{min-height:auto;grid-template-columns:1fr;padding:40px 32px}
   .svc-visual{display:none}
 }
 

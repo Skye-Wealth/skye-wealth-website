@@ -132,33 +132,7 @@ document.querySelectorAll('.mag').forEach(btn => {
   });
 });
 
-/* ── SERVICES HORIZONTAL SCROLL ─────────────────── */
-(function () {
-  const track   = document.getElementById('services-track');
-  const dots    = document.querySelectorAll('.svc-dot');
-  const section = document.querySelector('.services');
-  if (!track) return;
-
-  gsap.matchMedia().add('(min-width: 901px)', () => {
-    gsap.to(track, {
-      x: () => -(track.scrollWidth - track.parentElement.offsetWidth),
-      ease: 'none',
-      scrollTrigger: {
-        trigger: section,
-        start: 'top top',
-        end: () => `+=${track.scrollWidth - track.parentElement.offsetWidth}`,
-        pin: true,
-        scrub: 0.6,
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
-        onUpdate: self => {
-          const idx = Math.round(self.progress * (dots.length - 1));
-          dots.forEach((d, i) => d.classList.toggle('is-active', i === idx));
-        },
-      },
-    });
-  });
-})();
+/* ── SERVICES — pure CSS sticky stack, no JS needed ─ */
 
 /* ── STATEMENT POPS ──────────────────────────────── */
 gsap.from('.stat-box', {
