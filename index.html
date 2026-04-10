@@ -54,30 +54,57 @@ a { text-decoration: none; color: inherit; }
 .reveal-line { overflow: hidden; display: block; }
 .reveal-line .inner { display: block; will-change: transform; }
 
+/* ── SPLASH SCREEN ──────────────────────────────── */
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: var(--coral);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.splash-logo {
+  width: clamp(180px, 32vw, 420px);
+  height: auto;
+  filter: brightness(0) invert(1);
+  will-change: transform, opacity;
+}
+
 /* ── NAV ────────────────────────────────────────── */
 .nav {
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 200;
-  padding: 20px 48px;
+  padding: 12px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  transition: background 0.5s var(--ease-smooth),
-              box-shadow 0.5s var(--ease-smooth);
+  transition: background   0.5s var(--ease-smooth),
+              border-color 0.5s var(--ease-smooth),
+              box-shadow   0.5s var(--ease-smooth),
+              backdrop-filter 0.5s var(--ease-smooth);
 }
-.nav.is-light {
-  background: var(--white);
-  box-shadow: 0 1px 0 rgba(0,0,0,0.07);
+
+/* ── LIQUID GLASS STATE (on scroll) ──────────────── */
+.nav.is-glass {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.6) inset,   /* top specular shine */
+    0 8px 32px rgba(0, 0, 0, 0.08);
 }
+
 .nav-logo img {
   height: 28px;
   width: auto;
   filter: brightness(0) invert(1);
   transition: filter 0.5s var(--ease-smooth);
 }
-/* on light nav, restore the coral colour from the SVG */
-.nav.is-light .nav-logo img { filter: none; }
+.nav.is-glass .nav-logo img { filter: none; }
 
 .nav-links {
   display: flex;
@@ -90,12 +117,12 @@ a { text-decoration: none; color: inherit; }
   font-weight: 500;
   padding: 8px 16px;
   border-radius: 100px;
-  color: rgba(255,255,255,0.75);
+  color: rgba(255,255,255,0.80);
   transition: color 0.3s, background 0.3s;
 }
-.nav-links a:hover { color: white; background: rgba(255,255,255,0.1); }
-.nav.is-light .nav-links a { color: var(--charcoal); }
-.nav.is-light .nav-links a:hover { background: rgba(0,0,0,0.05); color: var(--black); }
+.nav-links a:hover { color: white; background: rgba(255,255,255,0.12); }
+.nav.is-glass .nav-links a { color: var(--charcoal); }
+.nav.is-glass .nav-links a:hover { background: rgba(0,0,0,0.06); color: var(--black); }
 
 .nav-cta {
   font-size: 14px;
@@ -104,17 +131,19 @@ a { text-decoration: none; color: inherit; }
   border-radius: 100px;
   border: 1.5px solid rgba(255,255,255,0.4);
   color: white;
-  transition: background 0.3s, border-color 0.3s, color 0.3s;
+  transition: background 0.3s, border-color 0.3s, color 0.3s, box-shadow 0.3s;
 }
 .nav-cta:hover { background: white; color: var(--black); border-color: white; }
-.nav.is-light .nav-cta {
+.nav.is-glass .nav-cta {
   background: var(--coral);
   border-color: var(--coral);
   color: white;
+  box-shadow: 0 4px 16px rgba(242,104,97,0.35);
 }
-.nav.is-light .nav-cta:hover {
+.nav.is-glass .nav-cta:hover {
   background: #e05550;
   border-color: #e05550;
+  box-shadow: 0 6px 20px rgba(242,104,97,0.45);
 }
 
 /* ── HERO ───────────────────────────────────────── */
@@ -1017,6 +1046,11 @@ footer {
 </head>
 <body>
 
+<!-- SPLASH -->
+<div class="splash" id="splash">
+  <img src="logo-text.svg" alt="Skye Wealth" class="splash-logo" id="splash-logo">
+</div>
+
 <!-- NAV -->
 <nav class="nav" id="nav">
   <a href="https://www.skye.com.au/" class="nav-logo">
@@ -1531,38 +1565,48 @@ const nav = document.getElementById('nav');
 ScrollTrigger.create({
   trigger: '#hero',
   start: 'bottom 72px',
-  onEnter:     () => nav.classList.add('is-light'),
-  onLeaveBack: () => nav.classList.remove('is-light'),
+  onEnter:     () => nav.classList.add('is-glass'),
+  onLeaveBack: () => nav.classList.remove('is-glass'),
 });
 
 /* ════════════════════════════════════════════════
-   4. NAV ENTRANCE
+   4. SPLASH → HERO SEQUENCE
 ════════════════════════════════════════════════ */
-gsap.from(nav, { y: -70, opacity: 0, duration: 1, ease: 'power3.out', delay: 0.1 });
+const splash     = document.getElementById('splash');
+const splashLogo = document.getElementById('splash-logo');
 
-/* ════════════════════════════════════════════════
-   5. HERO REVEAL — lines slide up from clip
-════════════════════════════════════════════════ */
-const heroTL = gsap.timeline({ delay: 0.25 });
-heroTL
-  .from('.hero-logo-img', { y: -24, opacity: 0, duration: 1.0, ease: 'power3.out' })
-  .from('.hero-heading .inner', {
-    y: '105%',
-    duration: 1,
-    ease: 'power4.out',
-    stagger: 0.14,
-  }, '-=0.4')
-  /* "Simplified." fades from coral-hidden → yellow */
-  .to('.hero-word-reveal', {
-    color: '#fee290',
-    duration: 2.6,
-    ease: 'power2.inOut',
-  }, '-=0.15')
-  .from('.hero-sub', { y: 20, opacity: 0, duration: 0.8, ease: 'power3.out' }, '-=2.0')
-  .from('.hero-actions .btn', {
-    y: 16, opacity: 0, scale: 0.95,
-    duration: 0.6, ease: 'back.out(1.8)', stagger: 0.1
-  }, '-=0.4');
+// Hide hero content and nav until splash exits
+gsap.set(['.hero-logo-display', '.hero-heading', '.hero-sub', '.hero-actions', nav], { autoAlpha: 0 });
+
+const masterTL = gsap.timeline();
+
+masterTL
+  // Logo materialises in splash
+  .from(splashLogo, { scale: 0.88, autoAlpha: 0, duration: 0.75, ease: 'power3.out' })
+  // Hold
+  .to({}, { duration: 0.75 })
+  // Splash exits: logo breathes up and fades, overlay dissolves
+  .to(splashLogo, { scale: 1.1, autoAlpha: 0, duration: 0.65, ease: 'power2.in' })
+  .to(splash, { autoAlpha: 0, duration: 0.55, ease: 'power2.inOut',
+    onComplete: () => { splash.style.display = 'none'; }
+  }, '-=0.35')
+  // Nav drops in
+  .to(nav, { autoAlpha: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.2')
+  .from(nav, { y: -50, duration: 0.7, ease: 'power3.out' }, '<')
+  // Hero logo (above heading)
+  .to('.hero-logo-display', { autoAlpha: 1, duration: 0.6, ease: 'power2.out' }, '-=0.4')
+  .from('.hero-logo-display', { y: -18, duration: 0.6, ease: 'power3.out' }, '<')
+  // Heading lines
+  .to('.hero-heading', { autoAlpha: 1, duration: 0.01 }, '-=0.2')
+  .from('.hero-heading .inner', { y: '105%', duration: 1, ease: 'power4.out', stagger: 0.14 }, '<')
+  // "Simplified." colour bloom
+  .to('.hero-word-reveal', { color: '#fee290', duration: 2.6, ease: 'power2.inOut' }, '-=0.2')
+  // Sub copy
+  .to('.hero-sub', { autoAlpha: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=2.1')
+  .from('.hero-sub', { y: 20, duration: 0.7, ease: 'power3.out' }, '<')
+  // Buttons
+  .to('.hero-actions', { autoAlpha: 1, duration: 0.01 }, '-=0.4')
+  .from('.hero-actions .btn', { y: 16, scale: 0.95, duration: 0.6, ease: 'back.out(1.8)', stagger: 0.1 }, '<');
 
 /* ════════════════════════════════════════════════
    6. TICKER — velocity responsive
