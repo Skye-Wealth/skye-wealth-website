@@ -15,5 +15,8 @@
     "react-is": "^18.3.0",
     "sanity": "^3.0.0",
     "styled-components": "^6.4.0"
+  },
+  "devDependencies": {
+    "node-html-parser": "^6.1.13"
   }
 }
