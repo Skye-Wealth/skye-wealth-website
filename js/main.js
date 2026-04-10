@@ -140,6 +140,20 @@ gsap.from('.stat-box', {
   scale: .88, opacity: 0, y: 20, duration: .65, ease: 'back.out(2)', stagger: .09,
 });
 
+/* ── SKYE TV ENTRANCE ────────────────────────────── */
+gsap.from('.tv-heading .t-skye', {
+  scrollTrigger: { trigger: '.skye-tv', start: 'top 88%' },
+  y: 48, opacity: 0, duration: 1.1, ease: 'power3.out',
+});
+gsap.from('.tv-heading .t-tv', {
+  scrollTrigger: { trigger: '.skye-tv', start: 'top 88%' },
+  y: 64, opacity: 0, duration: 1.2, ease: 'power3.out', delay: .08,
+});
+gsap.from('.tv-sub, .tv-view-all-link', {
+  scrollTrigger: { trigger: '.skye-tv', start: 'top 85%' },
+  y: 24, opacity: 0, duration: .9, ease: 'power2.out', stagger: .1, delay: .2,
+});
+
 /* ── SKYE TV TABS ────────────────────────────────── */
 document.querySelectorAll('.tv-tab').forEach(tab => {
   tab.addEventListener('click', () => {
