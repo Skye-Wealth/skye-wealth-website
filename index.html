@@ -317,43 +317,6 @@ a { text-decoration: none; color: inherit; }
 }
 .btn--dark:hover { box-shadow: 0 10px 32px rgba(0,0,0,0.3); }
 
-/* ── TICKER ─────────────────────────────────────── */
-.ticker-wrap {
-  padding: 20px 48px;
-  background: linear-gradient(to bottom, #c4443e 0%, var(--black) 100%);
-  position: relative;
-  z-index: 10;
-}
-.ticker {
-  background: rgba(255,255,255,0.07);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 100px;
-  padding: 12px 0;
-  overflow: hidden;
-  white-space: nowrap;
-}
-.ticker-inner {
-  display: inline-block;
-}
-.ticker-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.55);
-  margin: 0 36px;
-}
-.ticker-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
 
 /* ── STATEMENT SECTION ──────────────────────────── */
 .statement {
@@ -1025,7 +988,6 @@ footer {
   .footer-top { grid-template-columns: 1fr; gap: 36px; }
   .footer-bottom { flex-direction: column; align-items: flex-start; }
   footer { padding: 60px 24px 32px; }
-  .ticker-wrap { padding: 16px 24px; }
   .cta-actions { flex-direction: column; }
   .section-header { flex-direction: column; align-items: flex-start; }
   .section-sub { text-align: left; }
@@ -1073,25 +1035,6 @@ footer {
   </div>
 </section>
 
-<!-- TICKER -->
-<div class="ticker-wrap">
-  <div class="ticker">
-    <div class="ticker-inner" id="ticker-inner">
-      <span class="ticker-item"><span class="ticker-dot" style="background:var(--coral)"></span>Income Protection</span>
-      <span class="ticker-item"><span class="ticker-dot" style="background:var(--teal)"></span>Total &amp; Permanent Disablement</span>
-      <span class="ticker-item"><span class="ticker-dot" style="background:var(--pink)"></span>Death Cover</span>
-      <span class="ticker-item"><span class="ticker-dot" style="background:var(--yellow)"></span>Trauma Cover</span>
-      <span class="ticker-item"><span class="ticker-dot" style="background:var(--mauve)"></span>Insurance Review</span>
-      <span class="ticker-item"><span class="ticker-dot" style="background:var(--coral)"></span>Claims Support</span>
-      <span class="ticker-item"><span class="ticker-dot" style="background:var(--teal)"></span>Income Protection</span>
-      <span class="ticker-item"><span class="ticker-dot" style="background:var(--pink)"></span>Total &amp; Permanent Disablement</span>
-      <span class="ticker-item"><span class="ticker-dot" style="background:var(--yellow)"></span>Death Cover</span>
-      <span class="ticker-item"><span class="ticker-dot" style="background:var(--mauve)"></span>Trauma Cover</span>
-      <span class="ticker-item"><span class="ticker-dot" style="background:var(--coral)"></span>Insurance Review</span>
-      <span class="ticker-item"><span class="ticker-dot" style="background:var(--teal)"></span>Claims Support</span>
-    </div>
-  </div>
-</div>
 
 <!-- STATEMENT -->
 <section class="statement">
@@ -1589,24 +1532,19 @@ masterTL
   .from('.hero-actions .btn', { y: 16, scale: 0.95, duration: 0.6, ease: 'back.out(1.8)', stagger: 0.1 }, '<');
 
 /* ════════════════════════════════════════════════
-   6. TICKER — velocity responsive
+   6. HERO → STATEMENT BACKGROUND BLEND
+   Scrubs the hero bg colour from coral → white as
+   the user scrolls down through the hero section.
 ════════════════════════════════════════════════ */
-requestAnimationFrame(() => {
-  const inner = document.getElementById('ticker-inner');
-  inner.style.animation = 'none';
-  const w = inner.scrollWidth / 2;
-  const anim = gsap.to(inner, { x: -w, duration: 24, ease: 'none', repeat: -1 });
-  let velTimer;
-  let lastY = window.scrollY;
-  window.addEventListener('scroll', () => {
-    const vel = Math.abs(window.scrollY - lastY);
-    lastY = window.scrollY;
-    anim.timeScale(Math.min(5, 1 + vel * 0.2));
-    clearTimeout(velTimer);
-    velTimer = setTimeout(() => {
-      gsap.to(anim, { timeScale: 1, duration: 1.2, ease: 'power2.inOut' });
-    }, 200);
-  }, { passive: true });
+gsap.to('#hero', {
+  backgroundColor: '#ffffff',
+  ease: 'none',
+  scrollTrigger: {
+    trigger: '#hero',
+    start: 'top top',
+    end:   'bottom top',
+    scrub: 1.2,
+  }
 });
 
 /* ════════════════════════════════════════════════
