@@ -189,10 +189,12 @@ document.querySelectorAll('.mag').forEach(btn => {
         gsap.set(top, { x: 0, y: 0, rotation: 0, opacity: 1 });
         current = dir === 'next' ? (current + 1) % cards.length : (current - 1 + cards.length) % cards.length;
         layout(true);
-        if (stage.classList.contains('is-open')) renderPanel(current);
+        if (panelOpen) renderPanel(current);
       }
     });
   }
+
+  let panelOpen = false;
 
   function renderPanel(idx) {
     const d = COVERS[idx];
@@ -201,16 +203,24 @@ document.querySelectorAll('.mag').forEach(btn => {
     document.getElementById('panel-title').textContent = d.title;
     document.getElementById('panel-lead').textContent  = d.lead;
     document.getElementById('panel-cta-heading').textContent = d.cta;
-    document.getElementById('panel-points').innerHTML = d.points.map(p => `<li>${p}</li>`).join('');
+    document.getElementById('panel-points').innerHTML  = d.points.map(p => `<li>${p}</li>`).join('');
   }
 
   function openPanel(idx) {
     renderPanel(idx);
-    stage.classList.add('is-open');
+    panel.classList.add('is-open');
+    gsap.fromTo(panel,
+      { width: 0, opacity: 0, x: 32 },
+      { width: 500, opacity: 1, x: 0, duration: .55, ease: 'power3.out' }
+    );
+    panelOpen = true;
   }
 
   function closePanel() {
-    stage.classList.remove('is-open');
+    gsap.to(panel, { width: 0, opacity: 0, x: 32, duration: .4, ease: 'power2.in',
+      onComplete: () => panel.classList.remove('is-open')
+    });
+    panelOpen = false;
   }
 
   document.getElementById('stack-next').addEventListener('click', () => advance('next'));

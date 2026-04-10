@@ -157,17 +157,12 @@ body{
 .services{background:var(--cream);padding:120px 48px;overflow:hidden}
 .section-header{margin-bottom:72px}
 
-/* Stage: cards left, panel right — expands on interaction */
+/* Stage: flex row — panel width driven by GSAP */
 .stack-stage{
-  display:grid;
-  grid-template-columns:480px 0fr;
-  gap:0;
-  transition:grid-template-columns .55s var(--expo);
-  overflow:hidden;
-}
-.stack-stage.is-open{
-  grid-template-columns:480px 1fr;
+  display:flex;
+  align-items:flex-start;
   gap:40px;
+  overflow:hidden;
 }
 
 .stack-container{
@@ -221,20 +216,20 @@ body{
 .stack-hint{font-size:13px;color:#aaa;margin-left:auto}
 
 /* ── COVER PANEL (Apple liquid glass inline) ─────── */
+/* Panel hidden by default — GSAP animates width 0→auto */
 .cover-panel{
+  overflow:hidden;
+  width:0;
   opacity:0;
   pointer-events:none;
-  transform:translateX(24px);
-  transition:opacity .4s var(--expo),transform .4s var(--expo);
-  overflow:hidden;
+  flex-shrink:0;
 }
-.stack-stage.is-open .cover-panel{
-  opacity:1;
+.cover-panel.is-open{
   pointer-events:all;
-  transform:translateX(0);
 }
 
 .cover-glass{
+  width:500px;
   background:rgba(255,255,255,0.72);
   backdrop-filter:blur(40px) saturate(200%);
   -webkit-backdrop-filter:blur(40px) saturate(200%);
