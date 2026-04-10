@@ -77,16 +77,38 @@ ScrollTrigger.create({
 })();
 
 /* ── SPLASH → HERO SEQUENCE ──────────────────────── */
-const splash     = document.getElementById('splash');
-const splashLogo = document.getElementById('splash-logo');
+const splash      = document.getElementById('splash');
+const splashLogo  = document.getElementById('splash-logo');
+const strokePaths = splashLogo.querySelectorAll('.sp');
+const strokeLayer = document.getElementById('splash-strokes');
+const fillLayer   = document.getElementById('splash-fill');
+
+// Measure each path and set up stroke-dasharray
+strokePaths.forEach(path => {
+  const len = path.getTotalLength();
+  gsap.set(path, { strokeDasharray: len, strokeDashoffset: len });
+});
+gsap.set(fillLayer, { autoAlpha: 0 });
 gsap.set(['.hero-heading', '.hero-sub', '.hero-actions', nav], { autoAlpha: 0 });
 
 gsap.timeline()
-  .from(splashLogo, { scale: .88, autoAlpha: 0, duration: .75, ease: 'power3.out' })
-  .to({}, { duration: .75 })
-  .to(splashLogo, { scale: 1.1, autoAlpha: 0, duration: .65, ease: 'power2.in' })
-  .to(splash, { autoAlpha: 0, duration: .55, ease: 'power2.inOut',
-    onComplete: () => splash.style.display = 'none' }, '-=0.35')
+  // Fade in logo at normal scale
+  .from(splashLogo, { autoAlpha: 0, duration: .4, ease: 'power2.out' })
+  // Draw each path's stroke sequentially
+  .to(strokePaths, {
+    strokeDashoffset: 0,
+    duration: 1.6,
+    ease: 'power2.inOut',
+    stagger: .18,
+  })
+  // Crossfade: fill floods in, strokes fade out
+  .to(fillLayer,   { autoAlpha: 1, duration: .45, ease: 'power2.out' }, '-=.2')
+  .to(strokeLayer, { autoAlpha: 0, duration: .35, ease: 'power1.in'  }, '<')
+  // Hold, then exit
+  .to({}, { duration: .55 })
+  .to(splashLogo, { scale: 1.08, autoAlpha: 0, duration: .6, ease: 'power2.in' })
+  .to(splash, { autoAlpha: 0, duration: .5, ease: 'power2.inOut',
+    onComplete: () => splash.style.display = 'none' }, '-=0.3')
   .fromTo(nav, { autoAlpha: 0, y: -50 }, { autoAlpha: 1, y: 0, duration: .7, ease: 'power3.out' }, '-=0.1')
   .to('.hero-heading', { autoAlpha: 1, duration: .01 }, '-=0.3')
   .from('.hero-heading .inner', { y: '105%', duration: 1, ease: 'power4.out', stagger: .14 }, '<')
