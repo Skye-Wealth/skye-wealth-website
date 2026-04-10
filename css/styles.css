@@ -153,133 +153,126 @@ body{
 .stat-num em{color:var(--coral);font-style:normal}
 .stat-label{font-size:13px;color:#999;margin-top:6px;font-weight:500}
 
-/* ── SERVICES ───────────────────────────────────── */
-.services{background:var(--cream);padding:120px 48px;overflow:hidden}
+/* ── SERVICES (horizontal scroll) ───────────────── */
+.services{background:var(--cream);overflow:hidden}
+.services-head{padding:120px 48px 56px}
 .section-header{margin-bottom:72px}
 
-/* Stage: flex row — panel width driven by GSAP */
-.stack-stage{
+.services-viewport{overflow:hidden;width:100%}
+
+.services-track{
   display:flex;
-  align-items:flex-start;
-  gap:40px;
-  overflow:hidden;
-}
-
-.stack-container{
-  position:relative;height:540px;width:420px;
-  cursor:grab;user-select:none;flex-shrink:0;
-}
-.stack-container:active{cursor:grabbing}
-
-.stack-card{
-  position:absolute;width:420px;height:500px;
-  border-radius:28px;padding:44px 40px;
-  display:flex;flex-direction:column;justify-content:space-between;
+  flex-flow:row nowrap;
+  gap:20px;
+  padding:0 max(24px,calc((100vw - min(80vw,920px)) / 2));
   will-change:transform;
-  box-shadow:0 24px 72px rgba(0,0,0,.14);
-  overflow:hidden;color:#fff;
 }
-.stack-card::before{
+
+.svc-card{
+  flex-shrink:0;
+  width:min(80vw,920px);
+  border-radius:32px;
+  padding:56px 64px;
+  display:grid;
+  grid-template-columns:1fr 240px;
+  gap:48px;
+  align-items:center;
+  color:white;
+  overflow:hidden;
+  position:relative;
+  box-shadow:0 24px 72px rgba(0,0,0,.14);
+}
+.svc-card::before{
   content:'';position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(135deg,rgba(255,255,255,.18) 0%,transparent 55%);
+  background:linear-gradient(135deg,rgba(255,255,255,.16) 0%,transparent 55%);
 }
 .card--coral{background:var(--coral)}
 .card--teal{background:var(--teal)}
 .card--mauve{background:var(--mauve)}
 .card--yellow{background:var(--yellow);color:var(--black)}
 
-.card-num{font-size:11px;font-weight:700;letter-spacing:2.5px;opacity:.55;text-transform:uppercase}
-.card-icon{font-size:44px;line-height:1}
-.card-title{font-family:'Corben',serif;font-weight:400;font-size:36px;line-height:1.05;letter-spacing:-0.3px}
-.card-desc{font-size:15px;line-height:1.65;opacity:.78;margin-top:12px}
-.card-cta{
-  display:inline-flex;align-items:center;gap:8px;
-  font-size:13px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
-  cursor:pointer;background:none;border:none;color:inherit;padding:0;opacity:.9;
-  transition:gap .2s;
+.svc-meta{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+.svc-num{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;opacity:.5}
+.svc-tag{
+  font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  background:rgba(255,255,255,.22);padding:4px 12px;border-radius:100px;
 }
-.card-cta:hover{gap:14px}
+.card--yellow .svc-tag{background:rgba(0,0,0,.1)}
 
-/* Controls row */
-.stack-controls{display:flex;align-items:center;gap:24px;margin-top:28px}
-.stack-nav{display:flex;gap:10px}
-.stack-btn{
-  width:48px;height:48px;border-radius:50%;
-  border:1.5px solid rgba(0,0,0,.15);background:transparent;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;font-size:18px;color:var(--black);
-  transition:background .2s,border-color .2s,transform .2s;
-}
-.stack-btn:hover{background:var(--black);color:#fff;border-color:var(--black);transform:scale(1.05)}
-.stack-counter{font-family:'Corben',serif;font-weight:400;font-size:18px;color:var(--black);letter-spacing:-.5px}
-.stack-counter span{color:var(--coral)}
-.stack-hint{font-size:13px;color:#aaa;margin-left:auto}
-
-/* ── COVER PANEL (Apple liquid glass inline) ─────── */
-/* Panel hidden by default — GSAP animates width 0→auto */
-.cover-panel{
-  overflow:hidden;
-  width:0;
-  opacity:0;
-  pointer-events:none;
-  flex-shrink:0;
-}
-.cover-panel.is-open{
-  pointer-events:all;
-}
-
-.cover-glass{
-  width:500px;
-  background:rgba(255,255,255,0.72);
-  backdrop-filter:blur(40px) saturate(200%);
-  -webkit-backdrop-filter:blur(40px) saturate(200%);
-  border:1px solid rgba(255,255,255,0.9);
-  border-radius:32px;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,1),
-    0 24px 64px rgba(0,0,0,.1),
-    0 4px 16px rgba(0,0,0,.06);
-  padding:44px 40px;
-  height:500px;
-  display:flex;
-  flex-direction:column;
-  gap:20px;
-  overflow-y:auto;
-}
-.panel-icon{font-size:44px;line-height:1}
-.panel-tag{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--coral)}
-.panel-title{
+.svc-title{
   font-family:'Corben',serif;font-weight:400;
-  font-size:clamp(28px,3.5vw,42px);line-height:1.05;letter-spacing:-0.02em;
-  color:var(--black);
+  font-size:clamp(32px,3.5vw,48px);line-height:1.08;letter-spacing:-.02em;
+  margin-bottom:18px;
 }
-.panel-lead{font-size:15px;line-height:1.7;color:#555;flex:1}
-.panel-points{list-style:none;display:flex;flex-direction:column;gap:10px}
-.panel-points li{
-  display:flex;gap:12px;align-items:flex-start;
-  font-size:14px;line-height:1.55;color:#444;
+.svc-title em{font-style:normal;opacity:.65}
+
+.svc-desc{font-size:15px;line-height:1.7;opacity:.82;margin-bottom:24px}
+
+.svc-points{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:36px}
+.svc-points li{
+  font-size:14px;line-height:1.5;opacity:.88;
+  display:flex;align-items:center;gap:10px;
 }
-.panel-points li::before{
-  content:'✓';
-  width:22px;height:22px;flex-shrink:0;
-  background:var(--coral);color:#fff;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:11px;font-weight:700;margin-top:1px;
+.svc-points li::before{
+  content:'';width:6px;height:6px;border-radius:50%;
+  background:currentColor;opacity:.55;flex-shrink:0;
 }
-.panel-cta-row{
-  display:flex;gap:10px;flex-wrap:wrap;padding-top:8px;
-  border-top:1px solid rgba(0,0,0,.07);
+
+/* Visual / stat column */
+.svc-visual{
+  display:flex;flex-direction:column;align-items:center;
+  gap:28px;text-align:center;
 }
-.panel-close{
-  position:absolute;top:16px;right:16px;
-  width:36px;height:36px;border-radius:50%;
-  background:rgba(0,0,0,.06);border:none;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  font-size:16px;color:var(--charcoal);
-  transition:background .2s;
+.svc-icon-wrap{font-size:72px;line-height:1;filter:drop-shadow(0 4px 16px rgba(0,0,0,.15))}
+.svc-icon-wrap svg{width:80px;height:80px;filter:drop-shadow(0 4px 16px rgba(0,0,0,.15))}
+
+.svc-stat{
+  background:rgba(255,255,255,.18);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.3);
+  border-radius:20px;padding:20px 24px;
+  text-align:center;width:100%;
 }
-.panel-close:hover{background:rgba(0,0,0,.12)}
-.cover-glass-wrap{position:relative}
+.card--yellow .svc-stat{background:rgba(0,0,0,.08);border-color:rgba(0,0,0,.1)}
+
+.svc-stat-num{
+  font-family:'Corben',serif;font-weight:400;
+  font-size:42px;line-height:1;letter-spacing:-.03em;margin-bottom:4px;
+}
+.svc-stat-num span{font-size:22px;letter-spacing:-.01em}
+.svc-stat-label{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;opacity:.7}
+
+/* Progress dots */
+.svc-dots{display:flex;justify-content:center;gap:8px;padding:32px 0 48px}
+.svc-dot{
+  width:8px;height:8px;border-radius:100px;
+  background:rgba(0,0,0,.18);
+  transition:background .3s ease,width .3s cubic-bezier(.34,1.56,.64,1);
+  display:block;
+}
+.svc-dot.is-active{background:var(--coral);width:24px}
+
+/* White CTA button for coloured card backgrounds */
+.btn--white{
+  background:white;color:var(--black);border:none;
+  padding:14px 28px;border-radius:100px;
+  font-size:14px;font-weight:700;text-decoration:none;
+  display:inline-flex;align-items:center;gap:8px;
+  transition:background .2s ease,transform .2s ease;
+  letter-spacing:-.01em;
+  font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;
+}
+.btn--white:hover{background:rgba(255,255,255,.88);transform:translateY(-1px)}
+
+/* Mobile */
+@media(max-width:900px){
+  .services-head{padding:80px 24px 40px}
+  .services-viewport{overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .services-viewport::-webkit-scrollbar{display:none}
+  .services-track{padding:0 24px}
+  .svc-card{width:85vw;grid-template-columns:1fr;padding:40px 32px;scroll-snap-align:center}
+  .svc-visual{display:none}
+}
 
 /* ── SKYE TV ─────────────────────────────────────── */
 .skye-tv{background:var(--black);padding:120px 48px}

@@ -71,7 +71,7 @@
 
 <!-- SERVICES -->
 <section class="services" id="services">
-  <div class="section-header">
+  <div class="services-head">
     <div class="label">What we cover</div>
     <h2 class="section-heading">
       <span class="reveal-line"><span class="inner">Complete</span></span>
@@ -79,68 +79,107 @@
     </h2>
   </div>
 
-  <div id="stack-stage" class="stack-stage">
-    <!-- Card stack -->
-    <div>
-      <div class="stack-container" id="card-stack">
-        <div class="stack-card card--coral">
-          <div class="card-num">01 / 04</div>
-          <div class="card-icon">🛡️</div>
-          <div><div class="card-title">Income Protection</div><div class="card-desc">Your income is your greatest asset. If illness or injury stops you working, we make sure your life doesn't stop too.</div></div>
-          <button class="card-cta">Learn more →</button>
-        </div>
-        <div class="stack-card card--teal">
-          <div class="card-num">02 / 04</div>
-          <div class="card-icon"><svg viewBox="0 0 256 256" width="64" height="64" fill="none" aria-label="TPD insurance icon">
-  <style>.ts{stroke:currentColor;stroke-width:7;stroke-linecap:round;stroke-linejoin:round;fill:none}.ta{animation:tf 4.8s ease-in-out infinite;transform-origin:128px 128px}.tb{animation:tb2 3.6s ease-in-out infinite;transform-origin:128px 128px}.tc{animation:tw 6s linear infinite;transform-origin:96px 153px}@keyframes tf{0%,100%{transform:translateY(0) rotate(0)}25%{transform:translateY(-1px) rotate(-.35deg)}75%{transform:translateY(1px) rotate(.35deg)}}@keyframes tb2{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-.8px) scale(1.006)}}@keyframes tw{from{transform:rotate(0)}to{transform:rotate(360deg)}}</style>
-  <g class="ta"><path class="ts" d="M128 23C106 42 77 56 39 65V96C39 145 58 185 95 213M161 213C198 185 217 145 217 96V65C179 56 150 42 128 23Z"/></g>
-  <g class="tb"><circle class="ts" cx="128" cy="74" r="16"/><path class="ts" d="M112 101C112 88 124 86 132 90C143 95 145 106 146 121"/><path class="ts" d="M123 103L131 128"/><path class="ts" d="M145 121C154 121 163 121 172 121C180 121 184 126 184 134"/><path class="ts" d="M112 128C98 124 85 126 73 136C60 147 56 167 64 183"/><g class="tc"><circle class="ts" cx="96" cy="153" r="33"/><path class="ts" d="M96 128L96 139M114 135L106 143M121 153L110 153M114 171L106 163M96 178L96 167M78 171L86 163M71 153L82 153M78 135L86 143"/></g><path class="ts" d="M106 128C124 128 143 128 162 128"/><path class="ts" d="M162 128C171 128 176 132 179 140L190 171C192 177 189 183 183 185C177 187 171 184 169 178L160 151"/><path class="ts" d="M148 146L170 146L177 166"/><circle class="ts" cx="156" cy="177" r="7"/><path class="ts" d="M76 102L96 102L99 120"/></g>
-</svg></div>
-          <div><div class="card-title">TPD Cover</div><div class="card-desc">If you're permanently unable to work, TPD cover clears debts, covers care costs and rebuilds your financial foundation.</div></div>
-          <button class="card-cta">Learn more →</button>
-        </div>
-        <div class="stack-card card--mauve">
-          <div class="card-num">03 / 04</div>
-          <div class="card-icon">🏠</div>
-          <div><div class="card-title">Death Cover</div><div class="card-desc">Protect the people who depend on you. A lump sum that keeps your family's future secure when it matters most.</div></div>
-          <button class="card-cta">Learn more →</button>
-        </div>
-        <div class="stack-card card--yellow">
-          <div class="card-num">04 / 04</div>
-          <div class="card-icon">❤️</div>
-          <div><div class="card-title">Trauma Cover</div><div class="card-desc">Cancer, heart attack, stroke — an immediate payment so you can focus entirely on recovery, not bills.</div></div>
-          <button class="card-cta">Learn more →</button>
-        </div>
-      </div>
+  <div class="services-viewport" id="services-viewport">
+    <div class="services-track" id="services-track">
 
-      <!-- Controls -->
-      <div class="stack-controls">
-        <div class="stack-nav">
-          <button class="stack-btn" id="stack-prev" aria-label="Previous">←</button>
-          <button class="stack-btn" id="stack-next" aria-label="Next">→</button>
+      <!-- 01 Income Protection -->
+      <article class="svc-card card--coral">
+        <div class="svc-content">
+          <div class="svc-meta"><span class="svc-num">01 / 04</span><span class="svc-tag">Income Protection</span></div>
+          <h3 class="svc-title">Your income,<br><em>protected.</em></h3>
+          <p class="svc-desc">Your income is your single greatest financial asset. Income protection replaces up to 70% of your salary if illness or injury stops you working — keeping your mortgage, lifestyle and family intact.</p>
+          <ul class="svc-points">
+            <li>Up to 70% of pre-tax income replaced</li>
+            <li>Covers illness, injury &amp; mental health</li>
+            <li>Benefit periods tailored to your life</li>
+          </ul>
+          <a href="https://www.skye.com.au/phone-call" class="btn btn--white">Book a free call →</a>
         </div>
-        <div class="stack-counter"><span id="stack-current">01</span><span style="opacity:.3"> / 04</span></div>
-        <span class="stack-hint">Drag or tap to explore</span>
-      </div>
-    </div>
-
-    <!-- Inline cover panel (Apple liquid glass) -->
-    <div class="cover-panel" id="cover-panel">
-      <div class="cover-glass-wrap">
-        <button class="panel-close" id="panel-close" aria-label="Close">✕</button>
-        <div class="cover-glass">
-          <div class="panel-icon" id="panel-icon"></div>
-          <div class="panel-tag" id="panel-tag"></div>
-          <h3 class="panel-title" id="panel-title"></h3>
-          <p class="panel-lead" id="panel-lead"></p>
-          <ul class="panel-points" id="panel-points"></ul>
-          <div class="panel-cta-row">
-            <a href="https://www.skye.com.au/phone-call" class="btn btn--dark mag">Book a free call</a>
-            <a href="https://www.skye.com.au/life-insurance-advice" class="btn btn--outline-dark">Know where you stand →</a>
+        <div class="svc-visual">
+          <div class="svc-icon-wrap">🛡️</div>
+          <div class="svc-stat">
+            <div class="svc-stat-num">70<span>%</span></div>
+            <div class="svc-stat-label">of income replaced</div>
           </div>
         </div>
-      </div>
+      </article>
+
+      <!-- 02 TPD Cover -->
+      <article class="svc-card card--teal">
+        <div class="svc-content">
+          <div class="svc-meta"><span class="svc-num">02 / 04</span><span class="svc-tag">TPD Cover</span></div>
+          <h3 class="svc-title">If you can't work,<br><em>you're still covered.</em></h3>
+          <p class="svc-desc">If you're permanently unable to work, TPD cover pays a lump sum to clear debts, cover ongoing care and rebuild your financial foundation — without draining your super.</p>
+          <ul class="svc-points">
+            <li>Lump sum — no repayments, ever</li>
+            <li>Own vs any occupation definitions</li>
+            <li>Inside or outside super — your choice</li>
+          </ul>
+          <a href="https://www.skye.com.au/phone-call" class="btn btn--white">Book a free call →</a>
+        </div>
+        <div class="svc-visual">
+          <div class="svc-icon-wrap">
+            <svg viewBox="0 0 256 256" width="80" height="80" fill="none" aria-label="TPD insurance icon"><style>.ts{stroke:currentColor;stroke-width:7;stroke-linecap:round;stroke-linejoin:round;fill:none}.ta{animation:tf 4.8s ease-in-out infinite;transform-origin:128px 128px}.tb{animation:tb2 3.6s ease-in-out infinite;transform-origin:128px 128px}.tc{animation:tw 6s linear infinite;transform-origin:96px 153px}@keyframes tf{0%,100%{transform:translateY(0) rotate(0)}25%{transform:translateY(-1px) rotate(-.35deg)}75%{transform:translateY(1px) rotate(.35deg)}}@keyframes tb2{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-.8px) scale(1.006)}}@keyframes tw{from{transform:rotate(0)}to{transform:rotate(360deg)}}</style><g class="ta"><path class="ts" d="M128 23C106 42 77 56 39 65V96C39 145 58 185 95 213M161 213C198 185 217 145 217 96V65C179 56 150 42 128 23Z"/></g><g class="tb"><circle class="ts" cx="128" cy="74" r="16"/><path class="ts" d="M112 101C112 88 124 86 132 90C143 95 145 106 146 121"/><path class="ts" d="M123 103L131 128"/><path class="ts" d="M145 121C154 121 163 121 172 121C180 121 184 126 184 134"/><path class="ts" d="M112 128C98 124 85 126 73 136C60 147 56 167 64 183"/><g class="tc"><circle class="ts" cx="96" cy="153" r="33"/><path class="ts" d="M96 128L96 139M114 135L106 143M121 153L110 153M114 171L106 163M96 178L96 167M78 171L86 163M71 153L82 153M78 135L86 143"/></g><path class="ts" d="M106 128C124 128 143 128 162 128"/><path class="ts" d="M162 128C171 128 176 132 179 140L190 171C192 177 189 183 183 185C177 187 171 184 169 178L160 151"/><path class="ts" d="M148 146L170 146L177 166"/><circle class="ts" cx="156" cy="177" r="7"/><path class="ts" d="M76 102L96 102L99 120"/></g></svg>
+          </div>
+          <div class="svc-stat">
+            <div class="svc-stat-num">$480<span>K</span></div>
+            <div class="svc-stat-label">average TPD claim</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 03 Death Cover -->
+      <article class="svc-card card--mauve">
+        <div class="svc-content">
+          <div class="svc-meta"><span class="svc-num">03 / 04</span><span class="svc-tag">Death Cover</span></div>
+          <h3 class="svc-title">Their future,<br><em>guaranteed.</em></h3>
+          <p class="svc-desc">Death cover pays a tax-free lump sum to the people who depend on you. It clears your mortgage, funds your children's education and gives your family time to grieve — not worry about money.</p>
+          <ul class="svc-points">
+            <li>Tax-free lump sum to beneficiaries</li>
+            <li>Clears mortgage and outstanding debts</li>
+            <li>Includes terminal illness benefit</li>
+          </ul>
+          <a href="https://www.skye.com.au/phone-call" class="btn btn--white">Book a free call →</a>
+        </div>
+        <div class="svc-visual">
+          <div class="svc-icon-wrap">🏠</div>
+          <div class="svc-stat">
+            <div class="svc-stat-num">9<span>/10</span></div>
+            <div class="svc-stat-label">families are underinsured</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 04 Trauma Cover -->
+      <article class="svc-card card--yellow">
+        <div class="svc-content">
+          <div class="svc-meta"><span class="svc-num">04 / 04</span><span class="svc-tag">Trauma Cover</span></div>
+          <h3 class="svc-title">Focus on recovery,<br><em>not bills.</em></h3>
+          <p class="svc-desc">A cancer diagnosis, heart attack or stroke shouldn't also be a financial crisis. Trauma cover pays an immediate lump sum so you can focus entirely on getting better.</p>
+          <ul class="svc-points">
+            <li>Immediate cash payment on diagnosis</li>
+            <li>Covers 40+ critical illness conditions</li>
+            <li>Funds treatment beyond Medicare</li>
+          </ul>
+          <a href="https://www.skye.com.au/phone-call" class="btn btn--dark mag">Book a free call →</a>
+        </div>
+        <div class="svc-visual">
+          <div class="svc-icon-wrap">❤️</div>
+          <div class="svc-stat">
+            <div class="svc-stat-num">1<span>in 2</span></div>
+            <div class="svc-stat-label">Australians face cancer</div>
+          </div>
+        </div>
+      </article>
+
     </div>
+  </div>
+
+  <div class="svc-dots" id="svc-dots">
+    <span class="svc-dot is-active"></span>
+    <span class="svc-dot"></span>
+    <span class="svc-dot"></span>
+    <span class="svc-dot"></span>
   </div>
 </section>
 
