@@ -141,6 +141,32 @@ gsap.utils.toArray('.pop').forEach((el, i) => {
   });
 });
 
+/* ── WHY CARDS — tilt follow ─────────────────────── */
+document.querySelectorAll('.why-card').forEach(card => {
+  card.addEventListener('mouseenter', () => card.classList.add('is-hovered'));
+  card.addEventListener('mouseleave', () => {
+    card.classList.remove('is-hovered');
+    gsap.to(card, {
+      rotateX: 0, rotateY: 0, scale: 1,
+      duration: .7, ease: 'elastic.out(1, .55)',
+      transformPerspective: 1200,
+    });
+  });
+  card.addEventListener('mousemove', e => {
+    const r   = card.getBoundingClientRect();
+    const px  = (e.clientX - r.left) / r.width  - .5;  // -0.5 → 0.5
+    const py  = (e.clientY - r.top)  / r.height - .5;
+    gsap.to(card, {
+      rotateY:  px * 14,
+      rotateX: -py * 10,
+      scale:    1.035,
+      duration: .45,
+      ease:     'power2.out',
+      transformPerspective: 1200,
+    });
+  });
+});
+
 /* ── MAGNETIC BUTTONS ────────────────────────────── */
 document.querySelectorAll('.mag').forEach(btn => {
   btn.addEventListener('mousemove', e => {
