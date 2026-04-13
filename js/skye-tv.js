@@ -109,8 +109,6 @@
     var grid        = document.getElementById('tv-grid');
     if (!tabsEl || !featuredGrid || !grid) return;
 
-    setLoading(featuredGrid, grid, true);
-
     var allVideos = [];
 
     Promise.allSettled([
@@ -140,7 +138,8 @@
           tabsEl.appendChild(btn);
         });
 
-      renderVideos(allVideos, featuredGrid, grid);
+      /* Only replace placeholder content if real videos came back */
+      if (allVideos.length) renderVideos(allVideos, featuredGrid, grid);
     });
 
     /* Tab switching */
@@ -155,8 +154,7 @@
 
       var pid = btn.dataset.playlist;
       if (!pid) {
-        /* "All" tab — use already-fetched data */
-        renderVideos(allVideos, featuredGrid, grid);
+        if (allVideos.length) renderVideos(allVideos, featuredGrid, grid);
         return;
       }
 
