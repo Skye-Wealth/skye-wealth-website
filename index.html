@@ -218,65 +218,11 @@
       <a href="https://www.youtube.com/@skyewealth" class="btn btn--coral" style="font-size:13px;padding:11px 24px">All episodes on YouTube →</a>
     </div>
   </div>
-  <div class="tv-tabs">
-    <button class="tv-tab active">All</button>
-    <button class="tv-tab">Deep Dive</button>
-    <button class="tv-tab">Claims Corner</button>
-    <button class="tv-tab">Tell Us More</button>
-    <button class="tv-tab">Skye Simplifies</button>
-    <button class="tv-tab">Industry Updates</button>
+  <div class="tv-tabs" id="tv-tabs">
+    <button class="tv-tab active" data-playlist="">All</button>
   </div>
-  <div class="tv-featured-grid">
-    <a href="https://www.youtube.com/@skyewealth" class="vid-main pop">
-      <div class="vid-thumb" style="background:linear-gradient(135deg,#1a1a2e,#0c0e14)">
-        <div class="vid-thumb-bg"></div>
-        <div class="play-btn"><div class="play-tri"></div></div>
-      </div>
-      <div class="vid-info">
-        <div class="vid-series" style="color:var(--yellow)">Deep Dive</div>
-        <div class="vid-title">What actually happens when you make a life insurance claim?</div>
-        <div class="vid-meta">24 min · 4.2k views</div>
-      </div>
-    </a>
-    <div class="tv-side-list">
-      <a href="https://www.youtube.com/@skyewealth" class="vid-side pop">
-        <div class="vid-side-thumb" style="background:linear-gradient(135deg,#79c8bf22,#79c8bf44)">
-          <div class="play-xs"><div class="play-tri-xs"></div></div>
-        </div>
-        <div><div class="vid-side-series" style="color:var(--teal)">Claims Corner</div><div class="vid-side-title">TPD claim — what you need to know</div><div class="vid-side-meta">18 min</div></div>
-      </a>
-      <a href="https://www.youtube.com/@skyewealth" class="vid-side pop">
-        <div class="vid-side-thumb" style="background:linear-gradient(135deg,#f26861,#c0392b)">
-          <div class="play-xs"><div class="play-tri-xs"></div></div>
-        </div>
-        <div><div class="vid-side-series" style="color:var(--coral)">Tell Us More</div><div class="vid-side-title">How much income protection do I actually need?</div><div class="vid-side-meta">12 min</div></div>
-      </a>
-      <a href="https://www.youtube.com/@skyewealth" class="vid-side pop">
-        <div class="vid-side-thumb" style="background:linear-gradient(135deg,#c39bbd44,#c39bbd88)">
-          <div class="play-xs"><div class="play-tri-xs"></div></div>
-        </div>
-        <div><div class="vid-side-series" style="color:var(--mauve)">Skye Simplifies</div><div class="vid-side-title">Inside super vs outside super — which is better?</div><div class="vid-side-meta">9 min</div></div>
-      </a>
-    </div>
-  </div>
-  <div class="tv-grid">
-    <a href="https://www.youtube.com/@skyewealth" class="vid-card pop">
-      <div class="vid-card-thumb" style="background:linear-gradient(135deg,#fee29022,#fee29055)"></div>
-      <div class="vid-card-info"><div class="vid-card-series" style="color:var(--yellow)">Industry Updates</div><div class="vid-card-title">2024 life insurance policy changes explained</div><div class="vid-card-meta">8 min</div></div>
-    </a>
-    <a href="https://www.youtube.com/@skyewealth" class="vid-card pop">
-      <div class="vid-card-thumb" style="background:linear-gradient(135deg,#79c8bf22,#79c8bf55)"></div>
-      <div class="vid-card-info"><div class="vid-card-series" style="color:var(--teal)">Skye Simplifies</div><div class="vid-card-title">Trauma cover vs income protection — what's the difference?</div><div class="vid-card-meta">11 min</div></div>
-    </a>
-    <a href="https://www.youtube.com/@skyewealth" class="vid-card pop">
-      <div class="vid-card-thumb" style="background:linear-gradient(135deg,#f26861,#c0392b)"></div>
-      <div class="vid-card-info"><div class="vid-card-series" style="color:var(--coral)">Claims Corner</div><div class="vid-card-title">How to lodge a life insurance claim step-by-step</div><div class="vid-card-meta">15 min</div></div>
-    </a>
-    <a href="https://www.youtube.com/@skyewealth" class="vid-card pop">
-      <div class="vid-card-thumb" style="background:linear-gradient(135deg,#c39bbd44,#c39bbd99)"></div>
-      <div class="vid-card-info"><div class="vid-card-series" style="color:var(--mauve)">Deep Dive</div><div class="vid-card-title">Is group cover in super enough? An honest answer.</div><div class="vid-card-meta">20 min</div></div>
-    </a>
-  </div>
+  <div class="tv-featured-grid" id="tv-featured-grid"></div>
+  <div class="tv-grid" id="tv-grid"></div>
   <div class="tv-view-all">
     <a href="https://www.youtube.com/@skyewealth" class="btn btn--outline-white mag">View all episodes →</a>
   </div>
@@ -408,6 +354,7 @@
   </div>
 </footer>
 
+<script src="js/skye-tv.js"></script>
 <script src="js/mobile-menu.js"></script>
 <script src="js/chat.js"></script>
 </body>
