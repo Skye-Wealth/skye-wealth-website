@@ -19,6 +19,11 @@ function renderBody(blocks) {
       const src = sanityImg(block.asset._ref, 1200);
       return `<figure><img src="${src}" alt="${block.alt || ''}"><figcaption>${block.caption || ''}</figcaption></figure>`;
     }
+    if (block._type === 'youtube') {
+      if (!block.videoId) return '';
+      const caption = block.caption ? `<figcaption>${block.caption}</figcaption>` : '';
+      return `<figure><div class="youtube-embed"><iframe src="https://www.youtube.com/embed/${block.videoId}" title="YouTube video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>${caption}</figure>`;
+    }
     if (block._type !== 'block') return '';
 
     const text = block.children.map(span => {

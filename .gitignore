@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Sanity Studio build output and runtime cache
+sanity/dist/
+sanity/.sanity/
+
+# Local env files (keep secrets out of git)
+.env
+.env.local
+.env.*.local
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Vercel local dev cache
+.vercel/

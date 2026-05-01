@@ -37,7 +37,7 @@ function renderCard(post) {
     : `<div class="post-card-img-placeholder">📝</div>`;
   const cats = (post.categories || []).map(c => `<span class="post-card-cat">${c}</span>`).join('');
   return `
-    <a href="post.html?slug=${post.slug.current}" class="post-card">
+    <a href="/blog/${post.slug.current}" class="post-card">
       <div class="post-card-img">${img}</div>
       <div class="post-card-body">
         ${cats ? `<div class="post-card-cats">${cats}</div>` : ''}

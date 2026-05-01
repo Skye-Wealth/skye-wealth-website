@@ -1,6 +1,10 @@
 /**
  * Skye Wealth blog migration — skye.com.au → Sanity
  *
+ * Pulls every blog post from the live Squarespace site, uploads its
+ * featured image to Sanity, and creates a `post` document keyed by slug.
+ * Existing posts are wiped first so the import is deterministic.
+ *
  * Usage:
  *   1. Create an API token in sanity.io/manage → project → API → Tokens (Editor role)
  *   2. cd sanity && npm install
@@ -26,114 +30,188 @@ const client = createClient({
 });
 
 const BASE = 'https://www.skye.com.au';
-
-const POSTS = [
-  { slug: 'income-protection-self-employed-australia',                                                              date: '2026-03-30' },
-  { slug: 'worldwide-insurance-cover-what-happens-to-your-insurance-if-you-move-or-travel-overseas',               date: '2026-03-19' },
-  { slug: 'insurance-commissions-in-australia-what-you-are-really-paying-for',                                     date: '2026-03-11' },
-  { slug: 'insurance-inside-super-feels-like-it-should-be-enough-until-you-actually-run-the-numbers',              date: '2026-03-04' },
-  { slug: 'why-we-charge-a-fee-for-insurance-advice-in-australia',                                                 date: '2026-02-27' },
-  { slug: 'not-all-trauma-policies-are-created-equal',                                                             date: '2026-02-23' },
-  { slug: 'what-underwriters-really-look-for-in-a-life-insurance-application',                                     date: '2026-02-13' },
-  { slug: 'the-claims-process-no-one-explains-until-you-need-it',                                                  date: '2026-02-05' },
-  { slug: 'before-you-go-on-parental-leave-read-this-about-your-insurance',                                        date: '2026-01-29' },
-  { slug: 'can-you-claim-on-multiple-insurance-policies-at-the-same-time',                                         date: '2026-01-26' },
-  { slug: 'why-some-insurers-decline-while-others-accept',                                                         date: '2026-01-15' },
-  { slug: 'super-beneficiaries-explained-what-really-happens-to-your-money',                                       date: '2026-01-10' },
-  { slug: 'injured-over-the-holidays-heres-what-really-helps-you-recover',                                         date: '2026-01-04' },
-  { slug: 'what-most-people-get-wrong-about-industry-fund-insurance',                                              date: '2025-12-29' },
-  { slug: 'if-mario-and-luigi-were-real-people-could-we-actually-insure-them',                                     date: '2025-12-21' },
-  { slug: 'the-cancer-treatment-gap-no-one-talks-about-and-how-trauma-insurance-fills-it',                         date: '2025-12-15' },
-  { slug: 'own-the-extras-the-lesser-known-benefits-inside-insurance-policies',                                    date: '2025-12-03' },
-  { slug: 'why-your-tpd-definition-matters-more-than-you-think',                                                   date: '2025-11-26' },
-  { slug: 'child-critical-illness-cover-how-it-works-and-when-it-matters',                                         date: '2025-11-19' },
-  { slug: 'insurance-inside-vs-outside-super-what-you-need-to-know',                                               date: '2025-11-13' },
-];
+const UA = { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; SkyeMigration/1.0)' } };
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
 const uid = () => randomBytes(4).toString('hex');
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-function parseInline(node) {
-  const children = [];
-  const markDefs = [];
+async function discoverSlugs() {
+  const slugs = new Set();
+  const visitedOffsets = new Set();
+  let offset = '';
 
+  // Walk paginated blog index until we stop seeing new slugs.
+  while (true) {
+    const url = `${BASE}/blog${offset ? `?offset=${offset}` : ''}`;
+    if (visitedOffsets.has(offset)) break;
+    visitedOffsets.add(offset);
+
+    const res = await fetch(url, UA);
+    if (!res.ok) {
+      console.warn(`  ⚠️  index fetch ${res.status} for ${url}`);
+      break;
+    }
+    const html = await res.text();
+
+    const links = [...html.matchAll(/href="\/blog\/([a-z0-9-]+)"/g)].map(m => m[1]);
+    if (!links.length) break;
+
+    const before = slugs.size;
+    links.forEach(s => slugs.add(s));
+    if (slugs.size === before) break; // no new slugs → stop
+
+    const olderMatch = html.match(/href="\/blog\?offset=(\d+)"[^>]*>\s*Older/i);
+    if (!olderMatch) break;
+    offset = olderMatch[1];
+    await sleep(800);
+  }
+
+  // Defence in depth: cross-check sitemap.xml.
+  try {
+    const smRes = await fetch(`${BASE}/sitemap.xml`, UA);
+    if (smRes.ok) {
+      const sm = await smRes.text();
+      const smSlugs = [...sm.matchAll(/<loc>[^<]*\/blog\/([a-z0-9-]+)<\/loc>/g)].map(m => m[1]);
+      const missing = smSlugs.filter(s => !slugs.has(s));
+      if (missing.length) {
+        console.log(`  ℹ️  sitemap added ${missing.length} slug(s) the index didn't surface`);
+        missing.forEach(s => slugs.add(s));
+      }
+    }
+  } catch (err) {
+    console.warn(`  ⚠️  sitemap cross-check failed: ${err.message}`);
+  }
+
+  return [...slugs];
+}
+
+function walkInline(node, parentMarks, children, markDefs) {
   for (const child of node.childNodes) {
     const tag = child.tagName?.toLowerCase();
 
     if (!tag) {
-      // text node
       const text = child.text;
-      if (text) children.push({ _type: 'span', _key: uid(), text, marks: [] });
+      if (text) children.push({ _type: 'span', _key: uid(), text, marks: [...parentMarks] });
       continue;
     }
 
-    const marks = [];
-    let innerNode = child;
+    if (tag === 'br') {
+      children.push({ _type: 'span', _key: uid(), text: '\n', marks: [...parentMarks] });
+      continue;
+    }
 
-    if (tag === 'strong' || tag === 'b') marks.push('strong');
-    if (tag === 'em' || tag === 'i') marks.push('em');
+    const nodeMarks = [...parentMarks];
+    if (tag === 'strong' || tag === 'b') nodeMarks.push('strong');
+    if (tag === 'em' || tag === 'i') nodeMarks.push('em');
+    if (tag === 'code') nodeMarks.push('code');
 
     if (tag === 'a') {
       const href = child.getAttribute('href') || '';
-      const markKey = uid();
-      markDefs.push({ _type: 'link', _key: markKey, href });
-      marks.push(markKey);
+      if (href) {
+        const markKey = uid();
+        markDefs.push({ _type: 'link', _key: markKey, href });
+        nodeMarks.push(markKey);
+      }
     }
 
-    const text = innerNode.text;
-    if (text) children.push({ _type: 'span', _key: uid(), text, marks });
+    walkInline(child, nodeMarks, children, markDefs);
   }
+}
 
+function parseInline(node) {
+  const children = [];
+  const markDefs = [];
+  walkInline(node, [], children, markDefs);
   return { children, markDefs };
 }
 
-function htmlToBlocks(contentHtml) {
-  const root = parse(contentHtml);
-  const blocks = [];
+function processTextBlocks(container, blocks) {
+  for (const node of container.childNodes) {
+    const tag = node.tagName?.toLowerCase();
+    if (!tag) continue;
 
-  // Squarespace puts content in .sqs-html-content divs
-  const containers = root.querySelectorAll('.sqs-html-content');
-  const sources = containers.length ? containers : [root];
+    if (tag === 'p') {
+      const text = node.text.trim();
+      if (!text) continue;
+      const { children, markDefs } = parseInline(node);
+      blocks.push({ _type: 'block', _key: uid(), style: 'normal', children, markDefs });
+    }
 
-  for (const container of sources) {
-    for (const node of container.childNodes) {
-      const tag = node.tagName?.toLowerCase();
-      if (!tag) continue;
+    if (tag === 'h2' || tag === 'h3' || tag === 'h4') {
+      const text = node.text.trim();
+      if (!text) continue;
+      blocks.push({
+        _type: 'block', _key: uid(),
+        style: tag,
+        children: [{ _type: 'span', _key: uid(), text, marks: [] }],
+        markDefs: [],
+      });
+    }
 
-      if (tag === 'p') {
-        const text = node.text.trim();
-        if (!text) continue;
-        const { children, markDefs } = parseInline(node);
-        blocks.push({ _type: 'block', _key: uid(), style: 'normal', children, markDefs });
-      }
-
-      if (tag === 'h2' || tag === 'h3' || tag === 'h4') {
-        const text = node.text.trim();
-        if (!text) continue;
+    if (tag === 'ul' || tag === 'ol') {
+      const listItem = tag === 'ul' ? 'bullet' : 'number';
+      for (const li of node.querySelectorAll('li')) {
+        const { children, markDefs } = parseInline(li);
         blocks.push({
           _type: 'block', _key: uid(),
-          style: tag,
+          style: 'normal', listItem, level: 1,
+          children, markDefs,
+        });
+      }
+    }
+
+    if (tag === 'blockquote') {
+      const text = node.text.trim();
+      if (text) {
+        blocks.push({
+          _type: 'block', _key: uid(),
+          style: 'blockquote',
           children: [{ _type: 'span', _key: uid(), text, marks: [] }],
           markDefs: [],
         });
       }
+    }
+  }
+}
 
-      if (tag === 'ul' || tag === 'ol') {
-        const listItem = tag === 'ul' ? 'bullet' : 'number';
-        for (const li of node.querySelectorAll('li')) {
-          const { children, markDefs } = parseInline(li);
-          blocks.push({
-            _type: 'block', _key: uid(),
-            style: 'normal', listItem, level: 1,
-            children, markDefs,
-          });
-        }
+async function htmlToBlocks(contentHtml) {
+  const root = parse(contentHtml);
+  const blocks = [];
+
+  // Walk Squarespace block-level structure in document order so inline images
+  // appear between the right paragraphs.
+  const sqsBlocks = root.querySelectorAll('.sqs-block');
+
+  if (sqsBlocks.length) {
+    for (const sqsBlock of sqsBlocks) {
+      const cls = sqsBlock.getAttribute('class') || '';
+
+      if (cls.includes('sqs-block-image')) {
+        const img = sqsBlock.querySelector('img');
+        if (!img) continue;
+        const src = img.getAttribute('data-image') || img.getAttribute('src') || img.getAttribute('data-src');
+        if (!src) continue;
+        const alt = img.getAttribute('alt') || '';
+        const captionEl = sqsBlock.querySelector('.image-caption, figcaption');
+        const caption = captionEl?.text?.trim() || '';
+        const imageBlock = await uploadInlineImage(src, alt, caption);
+        if (imageBlock) blocks.push(imageBlock);
+        continue;
       }
 
-      if (tag === 'blockquote') {
-        const text = node.text.trim();
+      if (cls.includes('sqs-block-html')) {
+        const htmlContent = sqsBlock.querySelector('.sqs-html-content');
+        if (htmlContent) processTextBlocks(htmlContent, blocks);
+        continue;
+      }
+
+      if (cls.includes('sqs-block-quote')) {
+        const bq = sqsBlock.querySelector('blockquote');
+        if (!bq) continue;
+        // Squarespace wraps decorative “ ” glyphs in <span> tags around the quote text — strip them.
+        const text = bq.text.replace(/[“”„""]/g, '').trim();
         if (text) {
           blocks.push({
             _type: 'block', _key: uid(),
@@ -142,49 +220,107 @@ function htmlToBlocks(contentHtml) {
             markDefs: [],
           });
         }
+        continue;
       }
+
+      if (cls.includes('sqs-block-video')) {
+        const wrapper = sqsBlock.querySelector('.sqs-video-wrapper');
+        const dataHtml = wrapper?.getAttribute('data-html') || '';
+        // YouTube embed URL formats: youtube.com/embed/<id>, youtu.be/<id>, youtube.com/watch?v=<id>
+        const ytMatch = dataHtml.match(/(?:youtube\.com\/embed\/|youtu\.be\/|youtube\.com\/watch\?v=)([\w-]{6,})/);
+        if (ytMatch) {
+          blocks.push({
+            _type: 'youtube',
+            _key: uid(),
+            videoId: ytMatch[1],
+          });
+        } else {
+          console.warn(`    ⚠️  video block found but no YouTube ID extracted`);
+        }
+        continue;
+      }
+
+      // Other block types (button, code, social links, horizontal rule, etc.)
+      // are ignored — schema doesn't represent them. Add cases here if needed.
     }
+    return blocks;
   }
 
+  // Fallback for posts that don't use the .sqs-block structure.
+  const containers = root.querySelectorAll('.sqs-html-content');
+  const sources = containers.length ? containers : [root];
+  for (const container of sources) processTextBlocks(container, blocks);
   return blocks;
 }
 
 async function scrapePage(slug) {
   const url = `${BASE}/blog/${slug}`;
-  const res = await fetch(url, {
-    headers: { 'User-Agent': 'Mozilla/5.0 (compatible; SkyeMigration/1.0)' },
-  });
+  const res = await fetch(url, UA);
   if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
   return res.text();
 }
 
+function extractJsonLd(root) {
+  // Squarespace embeds an article schema in <script type="application/ld+json">.
+  // It has clean canonical title, ISO date, and author — preferred over DOM scraping.
+  for (const script of root.querySelectorAll('script[type="application/ld+json"]')) {
+    try {
+      const data = JSON.parse(script.text);
+      const node = Array.isArray(data) ? data.find(d => d['@type'] === 'BlogPosting' || d['@type'] === 'Article') : data;
+      if (!node) continue;
+      if (node['@type'] === 'BlogPosting' || node['@type'] === 'Article' || node.headline) {
+        return node;
+      }
+    } catch { /* ignore malformed */ }
+  }
+  return null;
+}
+
 function extractMeta(html) {
   const root = parse(html);
+  const ld = extractJsonLd(root) || {};
 
-  // Title
-  const titleEl = root.querySelector('h1.blog-title, .BlogItem-title, [itemprop="headline"], h1');
-  const title = titleEl?.text?.trim() || '';
+  // Title: prefer JSON-LD headline; fall back to og:title (strip " — Skye Wealth"); then H1 text.
+  let title = ld.headline?.trim() || '';
+  if (!title) {
+    const ogTitle = root.querySelector('meta[property="og:title"]')?.getAttribute('content') || '';
+    title = ogTitle.replace(/\s*[—-]\s*Skye Wealth\s*$/i, '').trim();
+  }
+  if (!title) {
+    // [itemprop="headline"] also matches <meta> in <head> — scope to body H1.
+    const h1 = root.querySelector('article h1, main h1, h1.entry-title, h1');
+    title = h1?.text?.trim() || '';
+  }
 
-  // Date from <time datetime="...">
-  const timeEl = root.querySelector('time[datetime]');
-  const publishedAt = timeEl?.getAttribute('datetime') || null;
+  // Date: prefer JSON-LD ISO; fall back to <meta itemprop="datePublished">; then article:published_time.
+  // NEVER use <time datetime="..."> on Squarespace — recent posts use relative format like "17 Apr"
+  // which JS parses to year 2001.
+  let publishedAt = ld.datePublished || null;
+  if (!publishedAt) {
+    publishedAt = root.querySelector('meta[itemprop="datePublished"]')?.getAttribute('content') || null;
+  }
+  if (!publishedAt) {
+    publishedAt = root.querySelector('meta[property="article:published_time"]')?.getAttribute('content') || null;
+  }
 
-  // Author
-  const authorEl = root.querySelector('.blog-author-name, .BlogItem-authorName, [itemprop="author"]');
-  const author = authorEl?.text?.trim() || 'Skye Wealth';
+  // All posts attribute to "Skye Wealth" — individual authors are kept private.
+  const author = 'Skye Wealth';
 
-  // Categories
   const catEls = root.querySelectorAll('.blog-item-category, .BlogItem-tag a');
   const categories = [...new Set(catEls.map(el => el.text.trim()).filter(Boolean))];
 
-  // Excerpt — first non-empty paragraph
   const firstP = root.querySelector('.sqs-html-content p');
   const excerpt = firstP?.text?.trim().slice(0, 200) || '';
 
-  // Featured image — og:image is most reliable on Squarespace
-  const ogImg = root.querySelector('meta[property="og:image"]')?.getAttribute('content') || null;
+  // Featured image — og:image is most reliable on Squarespace.
+  let ogImg = root.querySelector('meta[property="og:image"]')?.getAttribute('content') || null;
 
-  // Body HTML
+  // Fallback: first image inside a Squarespace image block on the page.
+  if (!ogImg) {
+    const fallbackImg = root.querySelector('.sqs-block-image img, article img');
+    ogImg = fallbackImg?.getAttribute('src') || fallbackImg?.getAttribute('data-src') || null;
+  }
+
   const bodyHtml = root.querySelector('article, .blog-item-content, main')?.innerHTML || html;
 
   return { title, publishedAt, author, categories, excerpt, ogImg, bodyHtml };
@@ -222,58 +358,158 @@ async function getOrCreateAuthor(name) {
   return doc._id;
 }
 
+async function uploadImageToSanity(imageUrl, alt) {
+  if (!imageUrl) return null;
+  try {
+    const res = await fetch(imageUrl, UA);
+    if (!res.ok) {
+      console.warn(`    ⚠️  image fetch ${res.status} for ${imageUrl}`);
+      return null;
+    }
+    const buf = Buffer.from(await res.arrayBuffer());
+    const filename = (imageUrl.split('/').pop() || 'cover.jpg').split('?')[0];
+    const asset = await client.assets.upload('image', buf, { filename });
+    return {
+      _type: 'image',
+      asset: { _type: 'reference', _ref: asset._id },
+      alt: alt || '',
+    };
+  } catch (err) {
+    console.warn(`    ⚠️  image upload failed: ${err.message}`);
+    return null;
+  }
+}
+
+async function uploadInlineImage(imageUrl, alt, caption) {
+  if (!imageUrl) return null;
+  try {
+    const res = await fetch(imageUrl, UA);
+    if (!res.ok) {
+      console.warn(`    ⚠️  inline image fetch ${res.status} for ${imageUrl}`);
+      return null;
+    }
+    const buf = Buffer.from(await res.arrayBuffer());
+    const filename = (imageUrl.split('/').pop() || 'inline.jpg').split('?')[0];
+    const asset = await client.assets.upload('image', buf, { filename });
+    return {
+      _type: 'image',
+      _key: uid(),
+      asset: { _type: 'reference', _ref: asset._id },
+      alt: alt || '',
+      caption: caption || '',
+    };
+  } catch (err) {
+    console.warn(`    ⚠️  inline image upload failed: ${err.message}`);
+    return null;
+  }
+}
+
+async function wipeExisting() {
+  const postIds = await client.fetch(`*[_type == "post"]._id`);
+  const authorIds = await client.fetch(`*[_type == "author"]._id`);
+  const total = postIds.length + authorIds.length;
+  if (!total) {
+    console.log('🧹  Nothing to wipe.');
+    return;
+  }
+  console.log(`🧹  Deleting ${postIds.length} posts and ${authorIds.length} authors...`);
+  const tx = client.transaction();
+  // Posts must be deleted before authors (posts reference authors).
+  postIds.forEach(id => tx.delete(id));
+  authorIds.forEach(id => tx.delete(id));
+  await tx.commit();
+}
+
+// ─── per-post processing ────────────────────────────────────────────────────
+
+async function processPost(slug) {
+  process.stdout.write(`  ⏳  ${slug} ... `);
+  try {
+    const html = await scrapePage(slug);
+    const { title, publishedAt, author, categories, excerpt, ogImg, bodyHtml } = extractMeta(html);
+    const body = await htmlToBlocks(bodyHtml);
+
+    const inlineImageCount = body.filter(b => b._type === 'image').length;
+
+    const categoryRefs = await Promise.all(
+      categories.map(async cat => {
+        const id = await getOrCreateCategory(cat);
+        return { _type: 'reference', _ref: id, _key: uid() };
+      })
+    );
+
+    const authorId = await getOrCreateAuthor(author);
+    const mainImage = await uploadImageToSanity(ogImg, title);
+
+    const doc = {
+      _type: 'post',
+      _id: `migrated-${slug}`,
+      title: title || slug.replace(/-/g, ' '),
+      slug: { _type: 'slug', current: slug },
+      publishedAt: publishedAt || new Date().toISOString(),
+      excerpt,
+      author: { _type: 'reference', _ref: authorId },
+      categories: categoryRefs,
+      body,
+      ...(mainImage ? { mainImage } : {}),
+    };
+
+    await client.createOrReplace(doc);
+    const inlineNote = inlineImageCount ? ` +${inlineImageCount} inline img` : '';
+    console.log(`✅  "${title || slug}"${mainImage ? '' : ' (no cover)'}${inlineNote}`);
+    return { ok: true };
+  } catch (err) {
+    console.log(`❌  ${err.message}`);
+    return { ok: false, error: err.message };
+  }
+}
+
 // ─── main ────────────────────────────────────────────────────────────────────
 
 async function migrate() {
-  console.log(`\n🚀  Starting migration of ${POSTS.length} posts...\n`);
+  // Single-post mode: skip discovery and wipe, just re-import the one slug.
+  const singleSlug = process.argv.slice(2)
+    .find(a => a.startsWith('--slug='))?.slice('--slug='.length);
 
-  for (const { slug, date } of POSTS) {
-    try {
-      process.stdout.write(`  ⏳  ${slug} ... `);
+  if (singleSlug) {
+    console.log(`\n🎯  Single-post mode: ${singleSlug}\n`);
+    const result = await processPost(singleSlug);
+    console.log(result.ok
+      ? '\n✅  Done.\n   Studio: https://skye-wealth.sanity.studio/\n'
+      : `\n❌  Failed: ${result.error}\n`);
+    process.exit(result.ok ? 0 : 1);
+  }
 
-      const html = await scrapePage(slug);
-      const { title, publishedAt, author, categories, excerpt, ogImg, bodyHtml } = extractMeta(html);
-      const body = htmlToBlocks(bodyHtml);
+  console.log('\n🔍  Discovering blog posts on skye.com.au...');
+  const slugs = await discoverSlugs();
+  console.log(`    Found ${slugs.length} posts.\n`);
 
-      // Resolve category refs
-      const categoryRefs = await Promise.all(
-        categories.map(async cat => {
-          const id = await getOrCreateCategory(cat);
-          return { _type: 'reference', _ref: id, _key: uid() };
-        })
-      );
+  if (!slugs.length) {
+    console.error('❌  No slugs discovered — aborting.');
+    process.exit(1);
+  }
 
-      // Resolve author ref
-      const authorId = await getOrCreateAuthor(author);
+  await wipeExisting();
 
-      const doc = {
-        _type: 'post',
-        _id: `migrated-${slug}`,
-        title: title || slug.replace(/-/g, ' '),
-        slug: { _type: 'slug', current: slug },
-        publishedAt: publishedAt || `${date}T00:00:00.000Z`,
-        excerpt,
-        author: { _type: 'reference', _ref: authorId },
-        categories: categoryRefs,
-        body,
-        // mainImage handled separately — we store the og:image URL as a note
-        ...(ogImg ? { _ogImage: ogImg } : {}),
-      };
+  console.log(`\n🚀  Importing ${slugs.length} posts...\n`);
 
-      await client.createOrReplace(doc);
-      console.log(`✅  "${title || slug}"`);
+  let ok = 0;
+  let fail = 0;
+  const failures = [];
 
-    } catch (err) {
-      console.log(`❌  ${err.message}`);
-    }
-
-    // Be polite — 800ms between requests
+  for (const slug of slugs) {
+    const result = await processPost(slug);
+    if (result.ok) ok++;
+    else { fail++; failures.push({ slug, error: result.error }); }
     await sleep(800);
   }
 
-  console.log('\n✅  Migration complete. Check your Studio at https://skye-wealth.sanity.studio/\n');
-  console.log('📸  Note: featured images were not auto-uploaded (Squarespace CDN blocks hotlinking).');
-  console.log('    Each post has _ogImage field with the original URL so you can upload them manually.\n');
+  console.log(`\n✅  ${ok} succeeded, ${fail} failed.`);
+  if (fail) {
+    console.log('\nFailed posts:');
+    failures.forEach(f => console.log(`  - ${f.slug}: ${f.error}`));
+  }
+  console.log('\n   Studio: https://skye-wealth.sanity.studio/\n');
 }
 
 migrate();

@@ -39,5 +39,6 @@ export default {
         { name: 'caption', type: 'string', title: 'Caption' },
       ],
     },
+    { type: 'youtube' },
   ],
 }

@@ -38,6 +38,10 @@
     {
       "source": "/api/sanity/:path*",
       "destination": "https://f0yrya1r.api.sanity.io/:path*"
+    },
+    {
+      "source": "/blog/:slug",
+      "destination": "/post.html?slug=:slug"
     }
   ],
   "redirects": [
