@@ -12,6 +12,13 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": ["--yes", "serve", "-l", "3001", "."],
       "port": 3001
+    },
+    {
+      "name": "skye-wealth-nextjs",
+      "runtimeExecutable": "/bin/bash",
+      "runtimeArgs": ["start-nextjs.sh"],
+      "port": 3003,
+      "autoPort": false
     }
   ]
 }
